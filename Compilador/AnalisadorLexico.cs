@@ -8,7 +8,7 @@ namespace Compilador
     {
         public Token inicio;
 
-        public void geraToken(StreamReader codigo)
+        public bool geraToken(StreamReader codigo)
         {
             char caracter = (char)codigo.Read();
             string token = "";
@@ -72,9 +72,11 @@ namespace Compilador
                             caracter = (char)codigo.Read();
                             break;
                         }
-                        if (simboloSimples(caracter) || espacamento(caracter))
+                        if (simboloSimples(caracter) || espacamento(caracter) || codigo.EndOfStream)
                         {
                             adicionaListaToken(token, palavraReservada(token) ? "Palavra Reservada" : "Identificador");
+                            if (token == "fim")
+                                final = true;
                             estado = 0;
                         }
                         break;
@@ -170,6 +172,7 @@ namespace Compilador
                         break;
                 }//fim switch
             }//fim while
+            return final;
         }//fim geraToken
 
         private void adicionaListaToken(string id, string tipo)
