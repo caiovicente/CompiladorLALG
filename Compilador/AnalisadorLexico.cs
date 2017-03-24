@@ -15,7 +15,7 @@ namespace Compilador
             inicio = new Token();
             //aux = new Token();
             bool erroLexico = false;
-            bool final = false;
+            bool final = false; // Indica fim do arquivo(codigo)
             int estado = 0;
             while (!erroLexico && !final)
             {
