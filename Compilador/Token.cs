@@ -1,20 +1,24 @@
-﻿namespace Compilador
-{
-    public class Token
-    {
-        public string ident, tipo;
-        public Token proximo;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
+namespace Compilador
+{
+    class Token
+    {
+        public string id, tipo;
+        public Token proximo;
         public Token()
         {
-            ident = "";
+            id = "";
             tipo = "";
             proximo = null;
         }
-
         public Token(string id, string tipo)
         {
-            this.ident = id;
+            this.id = id;
             this.tipo = tipo;
             this.proximo = null;
         }
