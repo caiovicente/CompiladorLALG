@@ -3,18 +3,18 @@
     class Token
     {
         public string id, tipo;
-        public Token proximo;
+        public Token proximoToken;
         public Token()
         {
             id = "";
             tipo = "";
-            proximo = null;
+            proximoToken = null;
         }
         public Token(string id, string tipo)
         {
             this.id = id;
             this.tipo = tipo;
-            this.proximo = null;
+            this.proximoToken = null;
         }
     }
 }

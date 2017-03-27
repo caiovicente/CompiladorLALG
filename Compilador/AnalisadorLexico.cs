@@ -178,18 +178,18 @@ namespace Compilador
         private void adicionaListaToken(string id, string tipo)
         {
             Token novo = new Token(id, tipo);
-            if (inicio.proximo == null)
+            if (inicio.proximoToken == null)
             {
-                inicio.proximo = novo;
+                inicio.proximoToken = novo;
             }
             else
             {
-                var auxAdd = inicio.proximo;
-                while (auxAdd.proximo != null)
+                var auxAdd = inicio.proximoToken;
+                while (auxAdd.proximoToken != null)
                 {
-                    auxAdd = auxAdd.proximo;
+                    auxAdd = auxAdd.proximoToken;
                 }
-                auxAdd.proximo = novo;
+                auxAdd.proximoToken = novo;
             }
         }
 
