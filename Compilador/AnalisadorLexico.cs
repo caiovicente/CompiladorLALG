@@ -11,7 +11,7 @@ namespace Compilador
         public bool geraToken(StreamReader codigo)
         {
             char caracter = (char)codigo.Read();
-            string token = "";
+            string valorToken = "";
             inicio = new Token();
             //aux = new Token();
             bool erroLexico = false;
@@ -26,28 +26,28 @@ namespace Compilador
                         if (char.IsLetter(caracter))
                         {
                             estado = 1; // id ou palavra reservada
-                            token += caracter;
+                            valorToken += caracter;
                             caracter = (char)codigo.Read();
                             break;
                         }
                         if (char.IsNumber(caracter))
                         {
                             estado = 2; // numero
-                            token += caracter;
+                            valorToken += caracter;
                             caracter = (char)codigo.Read();
                             break;
                         }
                         if (espacamento(caracter))
                         {
                             caracter = (char)codigo.Read();
-                            //estado = 0; // ignorar espaçamentos
+                            estado = 0; // ignorar espaçamentos
                             break;
                         }
                         if (simboloSimples(caracter))
                         {
                             if (caracter == '/')
                             {
-                                token += caracter;
+                                valorToken += caracter;
                                 estado = 5; // Comentário "/*"
                                 caracter = (char)codigo.Read();
                                 break;
@@ -62,42 +62,43 @@ namespace Compilador
                             caracter = (char)codigo.Read();
                         }
                         erroLexico = true;
-                        Console.WriteLine("Erro Léxico!");
+                        Console.WriteLine("Erro Léxico! 1");
                         break; //fim case 0
 
                     case 1: /* Palavra reservada ou identificador */
                         if (char.IsLetter(caracter) || char.IsNumber(caracter))
                         {
-                            token += caracter;
+                            valorToken += caracter;
                             caracter = (char)codigo.Read();
                             break;
                         }
                         if (simboloSimples(caracter) || espacamento(caracter) || codigo.EndOfStream)
                         {
-                            adicionaListaToken(token, palavraReservada(token) ? "Palavra Reservada" : "Identificador");
-                            if (token == "fim")
-                                final = true;
                             estado = 0;
+                            adicionaListaToken(valorToken, palavraReservada(valorToken) ? "Palavra Reservada" : "Identificador");
+                            valorToken = "";
+                            if (codigo.EndOfStream)
+                                final = true;
                         }
                         break;
 
                     case 2: /* Número inteiro */
                         if (char.IsNumber(caracter))
                         {
-                            token += caracter;
+                            valorToken += caracter;
                             caracter = (char)codigo.Read();
                             break;
                         }
                         if (caracter == '.')
                         {
-                            token += caracter;
+                            valorToken += caracter;
                             caracter = (char)codigo.Read();
                             estado = 3;
                             break;
                         }
                         if (espacamento(caracter) || simboloSimples(caracter))
                         {
-                            adicionaListaToken(token, "Número Inteiro");
+                            adicionaListaToken(valorToken, "Número Inteiro");
                             estado = 0;
                         }
                         break;
@@ -105,33 +106,33 @@ namespace Compilador
                     case 3: /* Aux Número real */
                         if (char.IsNumber(caracter))
                         {
-                            token += caracter;
+                            valorToken += caracter;
                             estado = 4;
                             caracter = (char)codigo.Read();
                         }
                         else
                         {
                             erroLexico = true;
-                            Console.WriteLine("Erro Léxico!!");
+                            Console.WriteLine("Erro Léxico!! 2");
                         }
                         break;
 
                     case 4: /* Númeor real */
                         if (char.IsNumber(caracter))
                         {
-                            token += caracter;
+                            valorToken += caracter;
                             caracter = (char)codigo.Read();
                             break;
                         }
                         if (espacamento(caracter) || simboloSimples(caracter))
                         {
-                            adicionaListaToken(token, "Número real");
+                            adicionaListaToken(valorToken, "Número real");
                             estado = 0;
                         }
                         else
                         {
                             erroLexico = true;
-                            Console.WriteLine("Erro Léxico!!");
+                            Console.WriteLine("Erro Léxico!! 3");
                         }
                         break;
                     case 5: /* Comentário "/*" ou Simbolo Simples */
@@ -140,7 +141,7 @@ namespace Compilador
                             //estado = 6;
                             caracter = (char)codigo.Read();
                             var caracter2 = (char)codigo.Read();
-                            token = "";
+                            valorToken = "";
                             while (caracter != '*' && caracter2 != '/') //fazer caso for fim de codigo?
                             {
                                 caracter = (char)codigo.Read();
@@ -150,13 +151,13 @@ namespace Compilador
                         }
                         if (char.IsNumber(caracter) || char.IsLetter(caracter) || simboloSimples(caracter))
                         {
-                            adicionaListaToken(token, "Símbolo simples");
+                            adicionaListaToken(valorToken, "Símbolo simples");
                             estado = 0;
                         }
                         else
                         {
                             erroLexico = true;
-                            Console.WriteLine("Erro Léxico!!");
+                            Console.WriteLine("Erro Léxico!! 4");
                         }
                         break;
                     case 6: /* Comentário '}' */
@@ -191,6 +192,7 @@ namespace Compilador
                 }
                 auxAdd.proximoToken = novo;
             }
+            
         }
 
         private bool palavraReservada(string token)
@@ -214,7 +216,7 @@ namespace Compilador
 
         private bool espacamento(char caracter)
         {
-            return caracter == 9 || caracter == 10 || caracter == 11 || caracter == 13 || caracter == 32;
+            return (caracter == 9 || caracter == 10 || caracter == 11 || caracter == 13 || caracter == 32);
         }
 
         private bool simboloSimples(char caracter)
@@ -259,5 +261,10 @@ namespace Compilador
             //return false;
 
         }//fim simboloDuplo
+
+        public Token retornaToken()
+        {
+            return inicio;
+        }
     }//fim AnalisadorLexico
 }//fim Compilador
