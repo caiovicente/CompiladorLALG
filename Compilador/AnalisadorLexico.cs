@@ -100,7 +100,10 @@ namespace Compilador
                         {
                             adicionaListaToken(valorToken, "Número Inteiro");
                             estado = 0;
+                            break;
                         }
+                        erroLexico = true;
+                        Console.WriteLine("Erro Léxico! Num");
                         break;
 
                     case 3: /* Aux Número real */
