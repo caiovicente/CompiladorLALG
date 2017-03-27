@@ -43,7 +43,7 @@ namespace Compilador
                             estado = 0; // ignorar espaçamentos
                             break;
                         }
-                        if (simboloSimples(caracter))
+                        if (simboloSimples(caracter) || operador(caracter))
                         {
                             if (caracter == '/')
                             {
@@ -100,6 +100,7 @@ namespace Compilador
                         {
                             adicionaListaToken(valorToken, "Número Inteiro");
                             estado = 0;
+                            valorToken = "";
                             break;
                         }
                         erroLexico = true;
@@ -127,16 +128,15 @@ namespace Compilador
                             caracter = (char)codigo.Read();
                             break;
                         }
-                        if (espacamento(caracter) || simboloSimples(caracter))
+                        if (espacamento(caracter) || operador(caracter) || caracter == ';')
                         {
                             adicionaListaToken(valorToken, "Número real");
+                            valorToken = "";
                             estado = 0;
+                            break;
                         }
-                        else
-                        {
-                            erroLexico = true;
-                            Console.WriteLine("Erro Léxico!! 3");
-                        }
+                        erroLexico = true;
+                        Console.WriteLine("Erro Léxico!! 3");
                         break;
                     case 5: /* Comentário "/*" ou Simbolo Simples */
                         if (caracter == '*')
@@ -155,6 +155,7 @@ namespace Compilador
                         if (char.IsNumber(caracter) || char.IsLetter(caracter) || simboloSimples(caracter))
                         {
                             adicionaListaToken(valorToken, "Símbolo simples");
+                            valorToken = "";
                             estado = 0;
                         }
                         else
@@ -213,7 +214,7 @@ namespace Compilador
             palavra[8] = "else";
             palavra[9] = "begin";
             palavra[10] = "end";
-
+            palavra[11] = "program";
             return palavra.Contains(token);
         }
 
@@ -222,15 +223,25 @@ namespace Compilador
             return (caracter == 9 || caracter == 10 || caracter == 11 || caracter == 13 || caracter == 32);
         }
 
+        private bool operador(char caracter)
+        {
+            char[] operador = new char[4];
+            operador[0] = '+';
+            operador[1] = '-';
+            operador[2] = '/';
+            operador[3] = '*';
+            return operador.Contains(caracter);
+        }
+
         private bool simboloSimples(char caracter)
         {
             char[] simbolo = new char[16];
             simbolo[0] = '(';
             simbolo[1] = ')';
-            simbolo[2] = '*';
-            simbolo[3] = '/';
-            simbolo[4] = '+';
-            simbolo[5] = '-';
+            //simbolo[2] = '*';
+            //simbolo[3] = '/';
+            //simbolo[4] = '+';
+            //simbolo[5] = '-';
             simbolo[6] = ':';
             simbolo[7] = ';';
             simbolo[8] = ',';
