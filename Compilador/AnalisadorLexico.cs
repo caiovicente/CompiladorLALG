@@ -55,14 +55,31 @@ namespace Compilador
                             if (caracter == '{')
                             {
                                 estado = 6; // Comentário '{'
+                                valorToken = "";
                                 caracter = (char)codigo.Read();
                                 break;
                             }
-                            //todo
+                            if (caracter == '>' || caracter == '<' || caracter == ':')
+                            {
+                                valorToken += caracter;
+                                estado = 7; // Simbolo Duplo
+                                caracter = (char)codigo.Read();
+                                break;
+                            }
+                            adicionaListaToken(caracter.ToString(), "Símbolo simples");
                             caracter = (char)codigo.Read();
+                            valorToken = "";
+                            estado = 0;
+                            break;
+                        }
+                        if (codigo.EndOfStream)
+                        {
+                            final = true;
+                            break;
                         }
                         erroLexico = true;
                         Console.WriteLine("Erro Léxico! 1");
+                        //throw new Exception();
                         break; //fim case 0
 
                     case 1: /* Palavra reservada ou identificador */
@@ -72,7 +89,7 @@ namespace Compilador
                             caracter = (char)codigo.Read();
                             break;
                         }
-                        if (simboloSimples(caracter) || espacamento(caracter) || codigo.EndOfStream)
+                        if (simboloSimples(caracter) || espacamento(caracter) || operador(caracter) || codigo.EndOfStream)
                         {
                             estado = 0;
                             adicionaListaToken(valorToken, palavraReservada(valorToken) ? "Palavra Reservada" : "Identificador");
@@ -80,6 +97,8 @@ namespace Compilador
                             if (codigo.EndOfStream)
                                 final = true;
                         }
+                        erroLexico = true;
+                        Console.WriteLine("Erro Léxico! Caracter não permitido!");
                         break;
 
                     case 2: /* Número inteiro */
@@ -113,12 +132,10 @@ namespace Compilador
                             valorToken += caracter;
                             estado = 4;
                             caracter = (char)codigo.Read();
+                            break;
                         }
-                        else
-                        {
-                            erroLexico = true;
-                            Console.WriteLine("Erro Léxico!! 2");
-                        }
+                        erroLexico = true;
+                        Console.WriteLine("Erro Léxico!! 2");
                         break;
 
                     case 4: /* Númeor real */
@@ -138,6 +155,8 @@ namespace Compilador
                         erroLexico = true;
                         Console.WriteLine("Erro Léxico!! 3");
                         break;
+
+
                     case 5: /* Comentário "/*" ou Simbolo Simples */
                         if (caracter == '*')
                         {
@@ -152,28 +171,50 @@ namespace Compilador
                             }
                             break;
                         }
-                        if (char.IsNumber(caracter) || char.IsLetter(caracter) || simboloSimples(caracter))
+                        if (char.IsLetterOrDigit(caracter) || espacamento(caracter))
                         {
                             adicionaListaToken(valorToken, "Símbolo simples");
                             valorToken = "";
                             estado = 0;
+                            break;
                         }
-                        else
-                        {
-                            erroLexico = true;
-                            Console.WriteLine("Erro Léxico!! 4");
-                        }
+                        erroLexico = true;
+                        Console.WriteLine("Erro Léxico!! 4");
                         break;
                     case 6: /* Comentário '}' */
-                        while (caracter != '}')
+                        while (caracter != '}' || espacamento(caracter))
                         {
                             caracter = (char)codigo.Read();
                         }
                         estado = 0;
                         caracter = (char)codigo.Read();
                         break;
-                    case 7:
-
+                    case 7: /* Simbolo duplo */
+                        if (caracter == '>' || caracter == '=')
+                        {
+                            valorToken += caracter;
+                            if (simboloDuplo(valorToken))
+                            {
+                                adicionaListaToken(valorToken, "Símbolo Duplo");
+                                valorToken = "";
+                                estado = 0;
+                                caracter = (char)codigo.Read();
+                                break;
+                            }
+                            erroLexico = true;
+                            Console.WriteLine("Erro Léxico, simbolo duplo não existe!");
+                            break;
+                        }
+                        if (espacamento(caracter) || char.IsLetterOrDigit(caracter))
+                        {
+                            adicionaListaToken(valorToken, "Símbolo simples");
+                            valorToken = "";
+                            estado = 0;
+                            caracter = (char)codigo.Read();
+                            break;
+                        }
+                        erroLexico = true;
+                        Console.WriteLine("Erro Léxico!! 5");
                         break;
                 }//fim switch
             }//fim while

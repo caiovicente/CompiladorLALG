@@ -6,8 +6,8 @@
         public Token proximoToken;
         public Token()
         {
-            id = "";
-            tipo = "";
+            id = "ID";
+            tipo = "TIPO";
             proximoToken = null;
         }
         public Token(string id, string tipo)
