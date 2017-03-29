@@ -96,6 +96,7 @@ namespace Compilador
                             valorToken = "";
                             if (codigo.EndOfStream)
                                 final = true;
+                            break;
                         }
                         erroLexico = true;
                         Console.WriteLine("Erro Léxico! Caracter não permitido!");

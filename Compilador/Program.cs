@@ -16,12 +16,18 @@ namespace Compilador
             AnalisadorLexico analisadorLexico = new AnalisadorLexico();
             Console.WriteLine(analisadorLexico.geraToken(codigo) ? "Passou no Léxico" : "Não passou no Léxico");
 
-            Token tk = analisadorLexico.retornaToken();
-            while (tk != null)
-            {
-                Console.WriteLine(tk.id + "\t|  " + tk.tipo);
-                tk = tk.proximoToken;
-            }
+            
+            
+            
+            
+            
+            
+            //Token tk = analisadorLexico.retornaToken();
+            //while (tk != null)
+            //{
+            //    Console.WriteLine(tk.id + "\t|  " + tk.tipo);
+            //    tk = tk.proximoToken;
+            //}
             codigo.Close();
             Console.ReadKey();
         }
