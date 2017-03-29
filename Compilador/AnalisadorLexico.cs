@@ -4,11 +4,12 @@ using System.Linq;
 
 namespace Compilador
 {
-    class AnalisadorLexico
+    public class AnalisadorLexico
     {
-        public Token inicio;
+        private Token inicio;
+        private Token aux;
 
-        public bool geraToken(StreamReader codigo)
+        public bool realizaAnaliseLexica(StreamReader codigo)
         {
             char caracter = (char)codigo.Read();
             string valorToken = "";
@@ -37,13 +38,13 @@ namespace Compilador
                             caracter = (char)codigo.Read();
                             break;
                         }
-                        if (espacamento(caracter))
+                        if (verificaEspacamento(caracter))
                         {
                             caracter = (char)codigo.Read();
                             estado = 0; // ignorar espaçamentos
                             break;
                         }
-                        if (simboloSimples(caracter) || operador(caracter))
+                        if (verificaSimboloSimples(caracter) || verificaOperador(caracter))
                         {
                             if (caracter == '/')
                             {
@@ -89,10 +90,10 @@ namespace Compilador
                             caracter = (char)codigo.Read();
                             break;
                         }
-                        if (simboloSimples(caracter) || espacamento(caracter) || operador(caracter) || codigo.EndOfStream)
+                        if (verificaSimboloSimples(caracter) || verificaEspacamento(caracter) || verificaOperador(caracter) || codigo.EndOfStream)
                         {
                             estado = 0;
-                            adicionaListaToken(valorToken, palavraReservada(valorToken) ? "Palavra Reservada" : "Identificador");
+                            adicionaListaToken(valorToken, verificaPalavraReservada(valorToken) ? "Palavra Reservada" : "Identificador");
                             valorToken = "";
                             if (codigo.EndOfStream)
                                 final = true;
@@ -116,7 +117,7 @@ namespace Compilador
                             estado = 3;
                             break;
                         }
-                        if (espacamento(caracter) || simboloSimples(caracter))
+                        if (verificaEspacamento(caracter) || verificaSimboloSimples(caracter))
                         {
                             adicionaListaToken(valorToken, "Número Inteiro");
                             estado = 0;
@@ -146,7 +147,7 @@ namespace Compilador
                             caracter = (char)codigo.Read();
                             break;
                         }
-                        if (espacamento(caracter) || operador(caracter) || caracter == ';')
+                        if (verificaEspacamento(caracter) || verificaOperador(caracter) || caracter == ';')
                         {
                             adicionaListaToken(valorToken, "Número real");
                             valorToken = "";
@@ -172,7 +173,7 @@ namespace Compilador
                             }
                             break;
                         }
-                        if (char.IsLetterOrDigit(caracter) || espacamento(caracter))
+                        if (char.IsLetterOrDigit(caracter) || verificaEspacamento(caracter))
                         {
                             adicionaListaToken(valorToken, "Símbolo simples");
                             valorToken = "";
@@ -183,7 +184,7 @@ namespace Compilador
                         Console.WriteLine("Erro Léxico!! 4");
                         break;
                     case 6: /* Comentário '}' */
-                        while (caracter != '}' || espacamento(caracter))
+                        while (caracter != '}' || verificaEspacamento(caracter))
                         {
                             caracter = (char)codigo.Read();
                         }
@@ -194,7 +195,7 @@ namespace Compilador
                         if (caracter == '>' || caracter == '=')
                         {
                             valorToken += caracter;
-                            if (simboloDuplo(valorToken))
+                            if (verificaSimboloDuplo(valorToken))
                             {
                                 adicionaListaToken(valorToken, "Símbolo Duplo");
                                 valorToken = "";
@@ -206,7 +207,7 @@ namespace Compilador
                             Console.WriteLine("Erro Léxico, simbolo duplo não existe!");
                             break;
                         }
-                        if (espacamento(caracter) || char.IsLetterOrDigit(caracter))
+                        if (verificaEspacamento(caracter) || char.IsLetterOrDigit(caracter))
                         {
                             adicionaListaToken(valorToken, "Símbolo simples");
                             valorToken = "";
@@ -241,7 +242,7 @@ namespace Compilador
             
         }
 
-        private bool palavraReservada(string token)
+        private bool verificaPalavraReservada(string token)
         {
             string[] palavra = new string[12];
             //palavra[0] = "ident";
@@ -260,12 +261,12 @@ namespace Compilador
             return palavra.Contains(token);
         }
 
-        private bool espacamento(char caracter)
+        private bool verificaEspacamento(char caracter)
         {
             return (caracter == 9 || caracter == 10 || caracter == 11 || caracter == 13 || caracter == 32);
         }
 
-        private bool operador(char caracter)
+        private bool verificaOperador(char caracter)
         {
             char[] operador = new char[4];
             operador[0] = '+';
@@ -275,7 +276,7 @@ namespace Compilador
             return operador.Contains(caracter);
         }
 
-        private bool simboloSimples(char caracter)
+        private bool verificaSimboloSimples(char caracter)
         {
             char[] simbolo = new char[16];
             simbolo[0] = '(';
@@ -298,7 +299,7 @@ namespace Compilador
             return simbolo.Contains(caracter);
 
         }//fim simboloSimples
-        private bool simboloDuplo(string caracter)
+        private bool verificaSimboloDuplo(string caracter)
         {
             string[] simbolo = new string[4];
             simbolo[0] = ">=";
@@ -320,7 +321,15 @@ namespace Compilador
 
         public Token retornaToken()
         {
-            return inicio;
+            Token token = new Token();
+            token = aux.proximoToken;
+            aux = token;
+            return token;
+        }
+
+        public void setaInicioToken()
+        {
+            aux = inicio;
         }
     }//fim AnalisadorLexico
 }//fim Compilador

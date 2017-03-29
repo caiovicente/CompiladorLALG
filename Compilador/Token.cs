@@ -1,6 +1,6 @@
 ﻿namespace Compilador
 {
-    class Token
+    public class Token
     {
         public string id, tipo;
         public Token proximoToken;
