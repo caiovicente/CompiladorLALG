@@ -22,16 +22,15 @@ namespace Compilador
         
         private bool programa()
         {
-            token = analisadorLexico.retornaToken();
+            lerProximoToken();
             if (token.id == "program")
             {
-                token = analisadorLexico.retornaToken();
+                lerProximoToken();
                 if (token.tipo == "Identificador")
                 {
-                    token = analisadorLexico.retornaToken();
                     if (corpo())
                     {
-                        token = analisadorLexico.retornaToken();
+                        lerProximoToken();
                         if (token.id == ".")
                         {
                             return true;
@@ -47,14 +46,14 @@ namespace Compilador
 
         private bool corpo()
         {
-            token = analisadorLexico.retornaToken();
+            lerProximoToken();
             if (declaracao())
             {
                 if (token.id == "begin")
                 {
                     if (comandos())
                     {
-                        token = analisadorLexico.retornaToken();
+                        lerProximoToken();
                         if (token.id == "end")
                         {
                             return true;
@@ -70,7 +69,7 @@ namespace Compilador
 
         private bool declaracao()
         {
-            if (token.id != "begin")
+            if (token.id == "var" || token.id == "procedure")
             {
                 if (declaraVariavel())
                 {
@@ -89,13 +88,10 @@ namespace Compilador
         {
             if (token.id == "var")
             {
-                token = analisadorLexico.retornaToken();
-                if (variaveis())
+                if (variavel())
                 {
-                    token = analisadorLexico.retornaToken();
                     if (token.id == ":")
                     {
-                        token = analisadorLexico.retornaToken();
                         if (tipoDeVariavel())
                         {
                             return true;
@@ -109,28 +105,87 @@ namespace Compilador
             return true;
         }
 
-        private bool variaveis()
+        private bool variavel()
         {
-            return true;
+            lerProximoToken();
+            if (token.tipo == "Identificador")
+            {
+                if (maisVariavel())
+                {
+                    return true;
+                }
+                return false;
+            }
+            return false;
         }
 
+        private bool maisVariavel()
+        {
+            lerProximoToken();
+            if (token.id == ",")
+            {
+                lerProximoToken();
+                if (token.tipo == "Identificador")
+                {
+                    lerProximoToken();
+                    maisVariavel();
+                }
+                return false;
+            }
+            return true;
+        }
         private bool tipoDeVariavel()
         {
-            return true;
+            lerProximoToken();
+            if (token.tipo == "Real" || token.tipo == "Integer")
+            {
+                return true;
+            }
+            return false;
         }
 
         private bool declaraProcedimento()
         {
             if (token.id == "procedure")
             {
-                //todo
+                lerProximoToken();
+                if (token.tipo == "Identificador")
+                {
+                    if (parametros())
+                    {
+                        if (corpoProcedimento())
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                }
+                return false;
             }
+            return true;
+        }
+
+        private bool parametros()
+        {
+            return true;
+        }
+
+        private bool corpoProcedimento()
+        {
             return true;
         }
 
         private bool comandos()
         {
             return true;
+        }
+
+
+
+        private void lerProximoToken()
+        {
+            token = analisadorLexico.retornaToken();
         }
     }
 }
