@@ -168,14 +168,86 @@ namespace Compilador
 
         private bool parametros()
         {
+            lerProximoToken();
+            if (token.id == "(")
+            {
+                if (listaParametros())
+                {
+                    lerProximoToken();
+                    if (token.id == ")")
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
+            return true;
+        }
+
+        private bool listaParametros()
+        {
+            if (variavel())
+            {
+                lerProximoToken();
+                if (token.id == ":")
+                {
+                    if (tipoDeVariavel())
+                    {
+                        if (maisParametros())
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                return false;
+            }
+            return false;
+        }
+
+        private bool maisParametros()
+        {
+            lerProximoToken();
+            if (token.id == ";")
+            {
+                if (listaParametros())
+                {
+                    return true;
+                }
+                return false;
+            }
             return true;
         }
 
         private bool corpoProcedimento()
         {
-            return true;
+            if (declaraVariavelLocal())
+            {
+                lerProximoToken();
+                if (token.id == "begin")
+                {
+                    if (comandos())
+                    {
+                        lerProximoToken();
+                        if (token.id == "end")
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                }
+                return false;
+            }
+            return false;
         }
 
+        private bool declaraVariavelLocal()
+        {
+            return true;
+        }
+        
         private bool comandos()
         {
             return true;
