@@ -94,6 +94,11 @@ namespace Compilador
                     {
                         if (tipoDeVariavel())
                         {
+                            lerProximoToken();
+                            if (token.id == ";")
+                            {
+                                declaracao();
+                            }
                             return true;
                         }
                         return false;
@@ -173,9 +178,9 @@ namespace Compilador
             {
                 if (listaParametros())
                 {
-                    lerProximoToken();
                     if (token.id == ")")
                     {
+                        lerProximoToken();
                         return true;
                     }
                     return false;
@@ -189,7 +194,6 @@ namespace Compilador
         {
             if (variavel())
             {
-                lerProximoToken();
                 if (token.id == ":")
                 {
                     if (tipoDeVariavel())
@@ -224,7 +228,6 @@ namespace Compilador
         {
             if (declaraVariavelLocal())
             {
-                lerProximoToken();
                 if (token.id == "begin")
                 {
                     if (comandos())
@@ -245,6 +248,28 @@ namespace Compilador
 
         private bool declaraVariavelLocal()
         {
+            if (token.id == "var")
+            {
+                if (variavel())
+                {
+                    if (token.id == ":")
+                    {
+                        if (tipoDeVariavel())
+                        {
+                            lerProximoToken();
+                            if (token.id == ";")
+                            {
+                                lerProximoToken();
+                                declaraVariavelLocal();
+                            }
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                }
+                return false;
+            }
             return true;
         }
         

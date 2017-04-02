@@ -19,11 +19,6 @@ namespace Compilador
             AnalisadorLexico analisadorLexico = new AnalisadorLexico();
             Console.WriteLine(analisadorLexico.realizaAnaliseLexica(codigo) ? "Passou no Léxico" : "Não passou no Léxico");
 
-
-
-
-
-
             //analisadorLexico.setaInicioToken();
             //Token tk = analisadorLexico.retornaToken();
             //while (tk != null)
