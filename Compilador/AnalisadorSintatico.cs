@@ -275,10 +275,56 @@ namespace Compilador
         
         private bool comandos()
         {
+            lerProximoToken();
+            if (comando())
+            {
+                if (maisComandos())
+                {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }        
+
+        private bool maisComandos()
+        {
+            lerProximoToken();
+            if (token.id == ";")
+            {
+                comandos();
+            }
             return true;
         }
 
+        private bool comando()
+        {
+            if (token.id == "read")
+            {
+                lerProximoToken();
+                if (token.id == "(")
+                {
+                    if (variavel())
+                    {
+                        if (token.id == ")")
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+                return false;
+            }
 
+            if (token.id == "write")
+            {
+
+            }
+
+
+
+            return false;
+        }
 
         private void lerProximoToken()
         {
