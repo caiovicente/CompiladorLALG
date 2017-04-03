@@ -318,12 +318,161 @@ namespace Compilador
 
             if (token.id == "write")
             {
-
+                lerProximoToken();
+                if (token.id == "(")
+                {
+                    if (variavel())
+                    {
+                        if (token.id == ")")
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                }
+                return false;
             }
 
+            if (token.id == "while")
+            {
+                if (condicao())
+                {
+                    lerProximoToken();
+                    if (token.id == "do")
+                    {
+                        if (comandos())
+                        {
+                            lerProximoToken();
+                            if (token.id == "$")
+                            {
+                                return true;
+                            }
+                            return false;
+                        }
+                        return false;
+                    }
+                    return false;
+                }
+                return false;
+            }
 
+            if (token.id == "if")
+            {
+                if (condicao())
+                {
+                    lerProximoToken();
+                    if (token.id == "then")
+                    {
+                        if (comandos())
+                        {
+                            if (seFalso())
+                            {
+                                lerProximoToken();
+                                if (token.id == "$")
+                                {
+                                    return true;
+                                }
+                                return false;
+                            }
+                            return false;
+                        }
+                        return false;
+                    }
+                    return false;
+                }
+                return false;
+            }
+
+            if (token.tipo == "Identificador")
+            {
+                if (restoIdentificador())
+                {
+                    return true;
+                }
+                return false;
+            }
 
             return false;
+        }
+
+        private bool restoIdentificador()
+        {
+            lerProximoToken();
+            if (token.id == ":=")
+            {
+                if (expressao())
+                {
+                    return true;
+                }
+                return false;
+            }
+            if (listaArgumentos())
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool listaArgumentos()
+        {
+            if (token.id == "(")
+            {
+                if (argumentos())
+                {
+                    lerProximoToken();
+                    if (token.id == ")")
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool argumentos()
+        {
+            lerProximoToken();
+            if (token.tipo == "Identificador")
+            {
+                if (maisArgumentos())
+                {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
+
+        private bool maisArgumentos()
+        {
+            lerProximoToken();
+            if (token.id == ";")
+            {
+                if (argumentos())
+                {
+                    return true;
+                }
+                return false;
+            }
+            return true;
+        }
+
+        private bool expressao()
+        {
+            return true;
+        }
+
+        private  bool seFalso()
+        {
+            return true;
+        }
+
+        private bool condicao()
+        {
+            return true;
         }
 
         private void lerProximoToken()
