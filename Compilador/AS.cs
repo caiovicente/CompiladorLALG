@@ -296,82 +296,352 @@ namespace Compilador
 
         private bool dc_loc()
         {
+            if (dc_v())
+            {
+                if (mais_dcloc())
+                {
+                    return true;
+                }
+                return false;
+            }
             return true;
         }
 
         private bool mais_dcloc()
         {
+            lerProximoToken();
+            if (token.id == ";")
+            {
+                if (dc_loc())
+                {
+                    return true;
+                }
+                return false;
+            }
             return true;
         }
 
         private bool lista_arg()
         {
+            lerProximoToken();
+            if (token.id == "(")
+            {
+                if (argumentos())
+                {
+                    lerProximoToken();
+                    if (token.id == ")")
+                    {
+                        return true;
+                    }
+                    escreva("Falta identificador ')'");
+                    return false;
+                }
+                return false;
+            }
             return true;
         }
 
         private bool argumentos()
         {
-            return true;
+            lerProximoToken();
+            if (token.tipo == "Identificador")
+            {
+                if (mais_ident())
+                {
+                    return true;
+                }
+                return false;
+            }
+            return false;
         }
 
         private bool mais_ident()
         {
+            lerProximoToken();
+            if (token.id == ";")
+            {
+                if (argumentos())
+                {
+                    return true;
+                }
+                return false;
+            }
             return true;
         }
 
         private bool pfalsa()
         {
+            lerProximoToken();
+            if (token.id == "else")
+            {
+                if (comandos())
+                {
+                    return true;
+                }
+                return false;
+            }
             return true;
         }
 
         private bool comandos()
         {
-            return true;
+            if (comando())
+            {
+                if (mais_comandos())
+                {
+                    return true;
+                }
+                return false;
+            }
+            return false;
         }
 
         private bool mais_comandos()
         {
+            lerProximoToken();
+            if (token.id == ";")
+            {
+                if (comandos())
+                {
+                    return true;
+                }
+                return false;
+            }
             return true;
         }
 
         private bool comando()
         {
-            return true;
+            lerProximoToken();
+            if (token.id == "read")
+            {
+                lerProximoToken();
+                if (token.id == "(")
+                {
+                    if (variaveis())
+                    {
+                        lerProximoToken();
+                        if (token.id == ")")
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                }
+                return false;
+            }
+
+            if (token.id == "write")
+            {
+                lerProximoToken();
+                if (token.id == "(")
+                {
+                    if (variaveis())
+                    {
+                        lerProximoToken();
+                        if (token.id == ")")
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                }
+                return false;
+            }
+
+            if (token.id == "while")
+            {
+                if (condicao())
+                {
+                    lerProximoToken();
+                    if (token.id == "do")
+                    {
+                        if (comandos())
+                        {
+                            lerProximoToken();
+                            if (token.id == "$")
+                            {
+                                return true;
+                            }
+                            return false;
+                        }
+                        return false;
+                    }
+                    return false;
+                }
+                return false;
+            }
+
+            if (token.id == "if")
+            {
+                if (condicao())
+                {
+                    lerProximoToken();
+                    if (token.id == "then")
+                    {
+                        if (comandos())
+                        {
+                            if (pfalsa())
+                            {
+                                lerProximoToken();
+                                if (token.id == "$")
+                                {
+                                    return true;
+                                }
+                                return false;
+                            }
+                            return false;
+                        }
+                        return false;
+                    }
+                    return false;
+                }
+                return false;
+            }
+
+            if (token.tipo == "Identificador")
+            {
+                if (restoIdent())
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            return false;
         }
 
         private bool restoIdent()
         {
-            return true;
+            lerProximoToken();
+            if (token.id == ":=")
+            {
+                if (expressao())
+                {
+                    return true;
+                }
+                return false;
+            }
+            if (lista_arg())
+            {
+                return true;
+            }
+            return false;
         }
 
         private bool condicao()
         {
-            return true;
+            if (expressao())
+            {
+                if (relacao())
+                {
+                    if (expressao())
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
+            return false;
         }
 
         private bool relacao()
         {
-            return true;
+            lerProximoToken();
+            if (token.id == "=")
+            {
+                return true;
+            }
+
+            if (token.id == "<>")
+            {
+                return true;
+            }
+
+            if (token.id == ">=")
+            {
+                return true;
+            }
+
+            if (token.id == "<=")
+            {
+                return true;
+            }
+
+            if (token.id == ">")
+            {
+                return true;
+            }
+
+            if (token.id == "<")
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private bool expressao()
         {
-            return true;
+            if (termo())
+            {
+                if (outros_termos())
+                {
+                    return true;
+                }
+                return false;
+            }
+            return false;
         }
 
         private bool op_un()
         {
+            lerProximoToken();
+            if (token.id == "+")
+            {
+                return true;
+            }
+
+            if (token.id == "-")
+            {
+                return true;
+            }
             return true;
         }
 
         private bool outros_termos()
         {
+            if (op_ad())
+            {
+                if (termo())
+                {
+                    if (outros_termos())
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
             return true;
         }
 
         private bool op_ad()
         {
-            return true;
+            lerProximoToken();
+            if (token.id == "+")
+            {
+                return true;
+            }
+
+            if (token.id == "-")
+            {
+                return true;
+            }
+            return false;
         }
 
         private bool termo()
