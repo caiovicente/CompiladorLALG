@@ -128,25 +128,25 @@ namespace Compilador
         private bool dc_v()
         {
             //lerProximoToken();
-            //if (token.id == "var")
-            //{
-            if (variaveis())
+            if (token.id == "var")
             {
-                if (token.id == ":")
+                if (variaveis())
                 {
-                    if (tipo_var())
+                    if (token.id == ":")
                     {
-                        return true;
+                        if (tipo_var())
+                        {
+                            return true;
+                        }
+                        return false;
                     }
+                    escreva("Falta ident ':'");
                     return false;
                 }
-                escreva("Falta ident ':'");
                 return false;
             }
+            escreva("Falta identiicador 'var'");
             return false;
-            //}
-            //escreva("Falta identiicador 'var'");
-            //return false;
         }
 
         private bool tipo_var()
@@ -277,12 +277,12 @@ namespace Compilador
         {
             if (dc_loc())
             {
-                lerProximoToken();
+                //lerProximoToken();
                 if (token.id == "begin")
                 {
                     if (comandos())
                     {
-                        lerProximoToken();
+                        //lerProximoToken();
                         if (token.id == "end")
                         {
                             return true;

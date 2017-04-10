@@ -254,7 +254,7 @@ namespace Compilador
 
         private bool verificaPalavraReservada(string token)
         {
-            string[] palavra = new string[12];
+            string[] palavra = new string[13];
             //palavra[0] = "ident";
             palavra[0] = "real";
             palavra[1] = "integer";
@@ -268,6 +268,7 @@ namespace Compilador
             palavra[9] = "begin";
             palavra[10] = "end";
             palavra[11] = "program";
+            palavra[12] = "var";
             return palavra.Contains(token);
         }
 
