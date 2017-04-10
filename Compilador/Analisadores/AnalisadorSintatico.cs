@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Compilador
 {
-    class AS
+    public class AnalisadorSintatico
     {
         private AnalisadorLexico analisadorLexico;
         private Token token;
@@ -39,7 +35,7 @@ namespace Compilador
             if (token.id == "program")
             {
                 lerProximoToken();
-                if (token.tipo == "Identificador")
+                if (token.tipo == "ident")
                 {
                     if (corpo())
                     {
@@ -48,15 +44,15 @@ namespace Compilador
                         {
                             return true;
                         }
-                        escreva("Falta identificadoo '.'");
+                        escreva("Falta identificador '.'");
                         return false;
                     }
                     return false;
                 }
-                escreva("Falta identificador de nome do programa");
+                escreva("Falta ident de nome do programa");
                 return false;
             }
-            escreva("Falta identificador 'program'");
+            escreva("Falta ident 'program'");
             return false;
         }
 
@@ -64,22 +60,22 @@ namespace Compilador
         {
             if (dc())
             {
-                lerProximoToken();
+                //lerProximoToken();
                 if (token.id == "begin")
                 {
                     if (comandos())
                     {
-                        lerProximoToken();
+                        //lerProximoToken();
                         if (token.id == "end")
                         {
                             return true;
                         }
-                        escreva("Falta identificador 'end'");
+                        escreva("Falta ident 'end'");
                         return false;
                     }
                     return false;
                 }
-                escreva("Falta identificador 'begin'");
+                escreva("Falta ident 'begin'");
                 return false;
             }
             return false;
@@ -87,23 +83,32 @@ namespace Compilador
 
         private bool dc()
         {
-            if (dc_v())
+            lerProximoToken();
+            if (token.id == "var")
             {
-                if (mais_dc())
+                if (dc_v())
                 {
-                    //return true;
+                    if (mais_dc())
+                    {
+                        return true;
+                    }
+                    return false;
                 }
                 return false;
             }
-            if (dc_p())
+            if (token.id == "procedure")
             {
-                if (mais_dc())
+                if (dc_p())
                 {
-                    //return true;
+                    if (mais_dc())
+                    {
+                        return true;
+                    }
+                    return false;
                 }
                 return false;
             }
-            return true;
+            return false;
         }
 
         private bool mais_dc()
@@ -122,37 +127,36 @@ namespace Compilador
 
         private bool dc_v()
         {
-            lerProximoToken();
-            if (token.id == "var")
+            //lerProximoToken();
+            //if (token.id == "var")
+            //{
+            if (variaveis())
             {
-                if (variaveis())
+                if (token.id == ":")
                 {
-                    lerProximoToken();
-                    if (token.id == ":")
+                    if (tipo_var())
                     {
-                        if (tipo_var())
-                        {
-                            return true;
-                        }
-                        return false;
+                        return true;
                     }
-                    escreva("Falta identificador ':'");
                     return false;
                 }
+                escreva("Falta ident ':'");
                 return false;
             }
-            escreva("Falta identiicador 'var'");
             return false;
+            //}
+            //escreva("Falta identiicador 'var'");
+            //return false;
         }
 
         private bool tipo_var()
         {
             lerProximoToken();
-            if (token.tipo == "integer")
+            if (token.id == "integer")
             {
                 return true;
             }
-            if (token.tipo == "real")
+            if (token.id == "real")
             {
                 return true;
             }
@@ -163,7 +167,7 @@ namespace Compilador
         private bool variaveis()
         {
             lerProximoToken();
-            if (token.tipo == "Identificador")
+            if (token.tipo == "ident")
             {
                 if (mais_var())
                 {
@@ -192,11 +196,11 @@ namespace Compilador
 
         private bool dc_p()
         {
-            lerProximoToken();
-            if (token.id == "procedure")
-            {
+            //lerProximoToken();
+            //if (token.id == "procedure")
+            //{
                 lerProximoToken();
-                if (token.tipo == "Identificador")
+                if (token.tipo == "ident")
                 {
                     if (parametros())
                     {
@@ -209,8 +213,8 @@ namespace Compilador
                     return false;
                 }
                 return false;
-            }
-            return false;
+            //}
+            //return false;
         }
 
         private bool parametros()
@@ -225,7 +229,7 @@ namespace Compilador
                     {
                         return true;
                     }
-                    escreva("Falta identificador ')'");
+                    escreva("Falta ident ')'");
                     return false;
                 }
                 return false;
@@ -283,12 +287,12 @@ namespace Compilador
                         {
                             return true;
                         }
-                        escreva("Falta identificador 'end'");
+                        escreva("Falta ident 'end'");
                         return false;
                     }
                     return false;
                 }
-                escreva("Falta identificador 'begin'");
+                escreva("Falta ident 'begin'");
                 return false;
             }
             return false;
@@ -333,7 +337,7 @@ namespace Compilador
                     {
                         return true;
                     }
-                    escreva("Falta identificador ')'");
+                    escreva("Falta ident ')'");
                     return false;
                 }
                 return false;
@@ -344,7 +348,7 @@ namespace Compilador
         private bool argumentos()
         {
             lerProximoToken();
-            if (token.tipo == "Identificador")
+            if (token.tipo == "ident")
             {
                 if (mais_ident())
                 {
@@ -398,7 +402,7 @@ namespace Compilador
 
         private bool mais_comandos()
         {
-            lerProximoToken();
+            //lerProximoToken();
             if (token.id == ";")
             {
                 if (comandos())
@@ -501,7 +505,7 @@ namespace Compilador
                 return false;
             }
 
-            if (token.tipo == "Identificador")
+            if (token.tipo == "ident")
             {
                 if (restoIdent())
                 {
@@ -631,7 +635,7 @@ namespace Compilador
 
         private bool op_ad()
         {
-            lerProximoToken();
+            //lerProximoToken();
             if (token.id == "+")
             {
                 return true;
@@ -646,22 +650,83 @@ namespace Compilador
 
         private bool termo()
         {
-            return true;
+            if (op_un())
+            {
+                if (fator())
+                {
+                    if (mais_fatores())
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
+            return false;
         }
 
         private bool mais_fatores()
         {
+            if (op_mul())
+            {
+                if (fator())
+                {
+                    if (mais_fatores())
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
             return true;
         }
 
         private bool op_mul()
         {
-            return true;
+            lerProximoToken();
+            if (token.id == "*")
+            {
+                lerProximoToken();
+                return true;
+            }
+
+            if (token.id == "/")
+            {
+                lerProximoToken();
+                return true;
+            }
+            return false;
         }
 
         private bool fator()
         {
-            return true;
+            //lerProximoToken();
+            if (token.tipo == "ident")
+            {
+                return true;
+            }
+            if (token.tipo == "numero_int")
+            {
+                return true;
+            }
+            if (token.tipo == "numero_real")
+            {
+                return true;
+            }
+            if (token.id == "(")
+            {
+                if (expressao())
+                {
+                    if (token.id == ")")
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
+            return false;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace Compilador
     {
         private Token inicio;
         private Token aux;
+        Token tk = new Token();
 
         public bool realizaAnaliseLexica(StreamReader codigo)
         {
@@ -93,10 +94,19 @@ namespace Compilador
                         if (verificaSimboloSimples(caracter) || verificaEspacamento(caracter) || verificaOperador(caracter) || codigo.EndOfStream)
                         {
                             estado = 0;
-                            adicionaListaToken(valorToken, verificaPalavraReservada(valorToken) ? "Palavra Reservada" : "Identificador");
+                            adicionaListaToken(valorToken, verificaPalavraReservada(valorToken) ? "Palavra Reservada" : "ident");
                             valorToken = "";
                             if (codigo.EndOfStream)
+                            {
+                                // Gambiarra
+                                if (caracter == '.')
+                                {
+                                    valorToken += caracter;
+                                    adicionaListaToken(valorToken, "Símbolo simples");
+                                }
                                 final = true;
+                                setaInicioToken();
+                            }
                             break;
                         }
                         erroLexico = true;
@@ -119,7 +129,7 @@ namespace Compilador
                         }
                         if (verificaEspacamento(caracter) || verificaSimboloSimples(caracter))
                         {
-                            adicionaListaToken(valorToken, "Número Inteiro");
+                            adicionaListaToken(valorToken, "numero_int");
                             estado = 0;
                             valorToken = "";
                             break;
@@ -149,7 +159,7 @@ namespace Compilador
                         }
                         if (verificaEspacamento(caracter) || verificaOperador(caracter) || caracter == ';')
                         {
-                            adicionaListaToken(valorToken, "Número real");
+                            adicionaListaToken(valorToken, "numero_real");
                             valorToken = "";
                             estado = 0;
                             break;
@@ -173,7 +183,7 @@ namespace Compilador
                             }
                             break;
                         }
-                        if (char.IsLetterOrDigit(caracter) || verificaEspacamento(caracter))
+                        if (char.IsLetterOrDigit(caracter) || verificaEspacamento(caracter) || codigo.EndOfStream)
                         {
                             adicionaListaToken(valorToken, "Símbolo simples");
                             valorToken = "";
@@ -320,11 +330,10 @@ namespace Compilador
         }//fim simboloDuplo
 
         public Token retornaToken()
-        {
-            Token token = new Token();
-            token = aux.proximoToken;
-            aux = token;
-            return token;
+        {            
+            tk = aux.proximoToken;
+            aux = tk;
+            return tk;
         }
 
         public void setaInicioToken()
