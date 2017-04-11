@@ -37,6 +37,7 @@ namespace Compilador
                 lerProximoToken();
                 if (token.tipo == "ident")
                 {
+                    //lerProximoToken();
                     if (corpo())
                     {
                         lerProximoToken();
@@ -70,7 +71,7 @@ namespace Compilador
                         {
                             return true;
                         }
-                        escreva("Falta ident 'end'");
+                        escreva("Falta ident 'end' no final");
                         return false;
                     }
                     return false;
@@ -684,7 +685,7 @@ namespace Compilador
 
         private bool op_mul()
         {
-            lerProximoToken();
+            //lerProximoToken();
             if (token.id == "*")
             {
                 lerProximoToken();

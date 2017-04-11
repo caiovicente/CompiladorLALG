@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Analisadores\AnalisadorLexico.cs" />
     <Compile Include="Analisadores\AnalisadorSintatico.cs" />
+    <Compile Include="Analisadores\AS.cs" />
     <Compile Include="Tipos\Parametro.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
