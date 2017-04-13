@@ -29,45 +29,30 @@ namespace Compilador.Analisadores
             if (token.id == "program")
             {
                 lerProximoToken();
-            }
-            else
-            {
-                escreva("Erro 1");
-                return false;
-            }
-
-            if (token.tipo == "ident")
-            {
-                insereSimbolo(token.id, "ident_programa", "", "");
-                lerProximoToken();
-            }
-            else
-            {
+                if (token.tipo == "ident")
+                {
+                    insereSimbolo(token.id, "ident_programa", "", "");
+                    lerProximoToken();
+                    if (corpo())
+                    {
+                        escreva("Passou coupo()");
+                        lerProximoToken();
+                        if (token.id == ".")
+                        {
+                            escreva("Código correto!");
+                            return true;
+                        }
+                        escreva("Erro 4");
+                        return false;
+                    }
+                    escreva("Erro 3");
+                    return false;
+                }
                 escreva("Erro 2");
                 return false;
             }
-
-            if (corpo())
-            {
-                escreva("Passou coupo()");
-                lerProximoToken();
-            }
-            else
-            {
-                escreva("Erro 3");
-                return false;
-            }
-
-            if (token.id == ".")
-            {
-                escreva("Código correto!");
-                return true;
-            }
-            else
-            {
-                escreva("Erro 4");
-                return false;
-            }            
+            escreva("Erro 1");
+            return false;
         }
 
         private bool corpo()
@@ -93,16 +78,13 @@ namespace Compilador.Analisadores
                 escreva("A variável '{0}' já foi declarada nesse escopo", nome);
                 return false;
             }
-            else
+            aux = tabelaSimbolo.proximoSimbolo;
+            while (aux.proximoSimbolo != null)
             {
-                aux = tabelaSimbolo.proximoSimbolo;
-                while (aux.proximoSimbolo != null)
-                {
-                    aux = aux.proximoSimbolo;
-                }
-                aux.proximoSimbolo = simbolo;
-                return true;
+                aux = aux.proximoSimbolo;
             }
+            aux.proximoSimbolo = simbolo;
+            return true;
         }
 
         private bool buscaSimbolo(string nome, string escopo)
