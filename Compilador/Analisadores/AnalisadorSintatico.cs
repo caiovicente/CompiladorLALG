@@ -7,19 +7,9 @@ namespace Compilador
         private AnalisadorLexico analisadorLexico;
         private Token token;
         private string escopo = "global";
-        private Simbolo tabelaSimbolo;
+        private Simbolo tabelaSimbolo = new Simbolo();
         private Parametro tabelaParametro;
-
-        private void escreva(string erro)
-        {
-            Console.WriteLine(erro);
-        }
-
-        private void lerProximoToken()
-        {
-            token = analisadorLexico.retornaToken();
-        }
-
+        
         public bool realizaAnaliseSintatica(AnalisadorLexico analisadorLexico)
         {
             token = new Token();
@@ -37,7 +27,7 @@ namespace Compilador
                 lerProximoToken();
                 if (token.tipo == "ident")
                 {
-                    //lerProximoToken();
+                    insereSimbolo(token.id, "ident_programa", "", "");
                     if (corpo())
                     {
                         lerProximoToken();
@@ -59,9 +49,10 @@ namespace Compilador
 
         private bool corpo()
         {
+            lerProximoToken();
             if (dc())
             {
-                //lerProximoToken();
+                lerProximoToken();
                 if (token.id == "begin")
                 {
                     if (comandos())
@@ -71,56 +62,44 @@ namespace Compilador
                         {
                             return true;
                         }
-                        escreva("Falta ident 'end' no final");
+                        escreva("4");
                         return false;
                     }
+                    escreva("3");
                     return false;
                 }
-                escreva("Falta ident 'begin'");
+                escreva("2");
                 return false;
             }
+            escreva("1");
             return false;
         }
 
         private bool dc()
         {
-            lerProximoToken();
-            if (token.id == "var")
+            if (dc_v() && dc_p())
             {
-                if (dc_v())
+                if (mais_dc())
                 {
-                    if (mais_dc())
-                    {
-                        return true;
-                    }
-                    return false;
+                    return true;
                 }
+                escreva("6");
                 return false;
             }
-            if (token.id == "procedure")
-            {
-                if (dc_p())
-                {
-                    if (mais_dc())
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-                return false;
-            }
+            escreva("5");
             return false;
         }
 
         private bool mais_dc()
         {
-            lerProximoToken();
             if (token.id == ";")
             {
+                lerProximoToken();
                 if (dc())
                 {
                     return true;
                 }
+                escreva("7");
                 return false;
             }
             return true;
@@ -128,7 +107,6 @@ namespace Compilador
 
         private bool dc_v()
         {
-            //lerProximoToken();
             if (token.id == "var")
             {
                 if (variaveis())
@@ -137,17 +115,19 @@ namespace Compilador
                     {
                         if (tipo_var())
                         {
+                            lerProximoToken();
                             return true;
                         }
+                        escreva("10");
                         return false;
                     }
-                    escreva("Falta ident ':'");
+                    escreva("9");
                     return false;
                 }
+                escreva("8");
                 return false;
             }
-            escreva("Falta identiicador 'var'");
-            return false;
+            return true;
         }
 
         private bool tipo_var()
@@ -161,7 +141,7 @@ namespace Compilador
             {
                 return true;
             }
-            escreva("Tipo da variável faltando ou incorreta");
+            escreva("11");
             return false;
         }
 
@@ -170,26 +150,27 @@ namespace Compilador
             lerProximoToken();
             if (token.tipo == "ident")
             {
+                lerProximoToken();
                 if (mais_var())
                 {
                     return true;
                 }
+                escreva("13");
                 return false;
             }
-            escreva("Falta idendificador de variável");
+            escreva("12");
             return false;
         }
 
         private bool mais_var()
         {
-            lerProximoToken();
             if (token.id == ",")
             {
                 if (variaveis())
                 {
                     return true;
                 }
-                //escreva("");
+                escreva("14");
                 return false;
             }
             return true;
@@ -197,25 +178,21 @@ namespace Compilador
 
         private bool dc_p()
         {
-            //lerProximoToken();
-            //if (token.id == "procedure")
-            //{
-                lerProximoToken();
-                if (token.tipo == "ident")
+            if (token.id == "procedure")
+            {
+                if (parametros())
                 {
-                    if (parametros())
+                    if (corpo_p())
                     {
-                        if (corpo_p())
-                        {
-                            return true;
-                        }
-                        return false;
+                        return true;
                     }
+                    escreva("16");
                     return false;
                 }
+                escreva("15");
                 return false;
-            //}
-            //return false;
+            }
+            return true;
         }
 
         private bool parametros()
@@ -230,9 +207,10 @@ namespace Compilador
                     {
                         return true;
                     }
-                    escreva("Falta ident ')'");
+                    escreva("18");
                     return false;
                 }
+                escreva("17");
                 return false;
             }
             return true;
@@ -251,12 +229,16 @@ namespace Compilador
                         {
                             return true;
                         }
+                        escreva("22");
                         return false;
                     }
+                    escreva("21");
                     return false;
                 }
+                escreva("20");
                 return false;
             }
+            escreva("19");
             return false;
         }
 
@@ -269,6 +251,7 @@ namespace Compilador
                 {
                     return true;
                 }
+                escreva("23");
                 return false;
             }
             return true;
@@ -276,9 +259,9 @@ namespace Compilador
 
         private bool corpo_p()
         {
+            lerProximoToken();
             if (dc_loc())
             {
-                //lerProximoToken();
                 if (token.id == "begin")
                 {
                     if (comandos())
@@ -288,14 +271,16 @@ namespace Compilador
                         {
                             return true;
                         }
-                        escreva("Falta ident 'end'");
+                        escreva("27");
                         return false;
                     }
+                    escreva("26");
                     return false;
                 }
-                escreva("Falta ident 'begin'");
+                escreva("25");
                 return false;
             }
+            escreva("24");
             return false;
         }
 
@@ -303,10 +288,12 @@ namespace Compilador
         {
             if (dc_v())
             {
+                //lerProximoToken();
                 if (mais_dcloc())
                 {
                     return true;
                 }
+                escreva("28");
                 return false;
             }
             return true;
@@ -314,13 +301,15 @@ namespace Compilador
 
         private bool mais_dcloc()
         {
-            lerProximoToken();
+            //lerProximoToken();
             if (token.id == ";")
             {
+                lerProximoToken();
                 if (dc_loc())
                 {
                     return true;
                 }
+                escreva("29");
                 return false;
             }
             return true;
@@ -338,9 +327,10 @@ namespace Compilador
                     {
                         return true;
                     }
-                    escreva("Falta ident ')'");
+                    escreva("31'");
                     return false;
                 }
+                escreva("30");
                 return false;
             }
             return true;
@@ -355,8 +345,10 @@ namespace Compilador
                 {
                     return true;
                 }
+                escreva("33");
                 return false;
             }
+            escreva("32");
             return false;
         }
 
@@ -392,6 +384,7 @@ namespace Compilador
         {
             if (comando())
             {
+                //lerProximoToken(); trocado
                 if (mais_comandos())
                 {
                     return true;
@@ -403,9 +396,9 @@ namespace Compilador
 
         private bool mais_comandos()
         {
-            //lerProximoToken();
             if (token.id == ";")
             {
+                //lerProximoToken(); -------------------------------
                 if (comandos())
                 {
                     return true;
@@ -655,6 +648,7 @@ namespace Compilador
             {
                 if (fator())
                 {
+                    //lerProximoToken();
                     if (mais_fatores())
                     {
                         return true;
@@ -685,7 +679,7 @@ namespace Compilador
 
         private bool op_mul()
         {
-            //lerProximoToken();
+            lerProximoToken();
             if (token.id == "*")
             {
                 lerProximoToken();
@@ -726,6 +720,60 @@ namespace Compilador
                     return false;
                 }
                 return false;
+            }
+            return false;
+        }
+
+
+        private void escreva(string erro)
+        {
+            Console.WriteLine(erro);
+        }
+
+        private void escreva(string erro, string par)
+        {
+            Console.WriteLine(erro, par);
+        }
+
+        private void lerProximoToken()
+        {
+            token = analisadorLexico.retornaToken();
+        }
+
+        private bool insereSimbolo(string nome, string categoria, string escopo, string tipo)
+        {
+            Simbolo simbolo = new Simbolo(nome, categoria, escopo, tipo);
+            Simbolo aux;
+
+            if (tabelaSimbolo.proximoSimbolo == null)
+            {
+                tabelaSimbolo.proximoSimbolo = simbolo;
+                return true;
+            }
+            if (buscaSimbolo(nome, escopo))
+            {
+                escreva("A variável '{0}' já foi declarada nesse escopo", nome);
+                return false;
+            }
+            aux = tabelaSimbolo.proximoSimbolo;
+            while (aux.proximoSimbolo != null)
+            {
+                aux = aux.proximoSimbolo;
+            }
+            aux.proximoSimbolo = simbolo;
+            return true;
+        }
+
+        private bool buscaSimbolo(string nome, string escopo)
+        {
+            Simbolo simbolo = tabelaSimbolo.proximoSimbolo;
+            while (simbolo != null)
+            {
+                if (simbolo.nome == nome && simbolo.escopo == escopo)
+                {
+                    return true;
+                }
+                simbolo = simbolo.proximoSimbolo;
             }
             return false;
         }
