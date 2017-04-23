@@ -367,7 +367,6 @@ namespace Compilador
 
         private bool mais_dcloc(string escopo)
         {
-            //lerProximoToken();
             if (token.id == ";")
             {
                 lerProximoToken();
@@ -450,7 +449,6 @@ namespace Compilador
         {
             if (comando())
             {
-                //lerProximoToken(); trocado
                 if (mais_comandos())
                 {
                     return true;
@@ -464,7 +462,6 @@ namespace Compilador
         {
             if (token.id == ";")
             {
-                //lerProximoToken(); -------------------------------
                 if (comandos())
                 {
                     return true;
