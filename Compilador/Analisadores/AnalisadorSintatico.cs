@@ -28,6 +28,7 @@ namespace Compilador
                 if (token.tipo == "ident")
                 {
                     insereSimbolo(token.id, "ident_programa", "", "");
+                    escreva("Inserido nome de programa", token.id, "ident_programa", "", "");
                     if (corpo())
                     {
                         lerProximoToken();
@@ -57,7 +58,6 @@ namespace Compilador
                 {
                     if (comandos())
                     {
-                        //lerProximoToken();
                         if (token.id == "end")
                         {
                             return true;
@@ -77,7 +77,7 @@ namespace Compilador
 
         private bool dc()
         {
-            if (dc_v() && dc_p())
+            if (dc_v(escopo) && dc_p())
             {
                 if (mais_dc())
                 {
@@ -105,16 +105,32 @@ namespace Compilador
             return true;
         }
 
-        private bool dc_v()
+        private bool dc_v(string escopo)
         {
+            string[] nome = { };
+            string tipo = "";
+            int contadorVariaveis = 0;
+
             if (token.id == "var")
             {
-                if (variaveis())
+                string categoria = "variavel";
+                if (variaveis(ref nome, ref contadorVariaveis))
                 {
                     if (token.id == ":")
                     {
-                        if (tipo_var())
+                        if (tipo_var(ref tipo))
                         {
+                            for (int i = 0; i <= contadorVariaveis; i++)
+                            {
+                                if (insereSimbolo(nome[contadorVariaveis], categoria, escopo, tipo))
+                                {
+                                    escreva("Insrida variável: ", nome[contadorVariaveis], categoria, escopo, tipo);
+                                }
+                                else
+                                {
+                                    return false;
+                                }
+                            }
                             lerProximoToken();
                             return true;
                         }
@@ -130,28 +146,32 @@ namespace Compilador
             return true;
         }
 
-        private bool tipo_var()
+        private bool tipo_var(ref string tipo)
         {
             lerProximoToken();
             if (token.id == "integer")
             {
+                tipo = "inteiro";
                 return true;
             }
             if (token.id == "real")
             {
+                tipo = "real";
                 return true;
             }
             escreva("11");
             return false;
         }
 
-        private bool variaveis()
+        private bool variaveis(ref string[] nome, ref int contadorVariaveis)
         {
             lerProximoToken();
             if (token.tipo == "ident")
             {
+                nome[contadorVariaveis] = token.id;
+                contadorVariaveis++;
                 lerProximoToken();
-                if (mais_var())
+                if (mais_var(ref nome, ref contadorVariaveis))
                 {
                     return true;
                 }
@@ -162,11 +182,43 @@ namespace Compilador
             return false;
         }
 
-        private bool mais_var()
+        private bool variaveis(ref string nome)
+        {
+            lerProximoToken();
+            if (token.tipo == "ident")
+            {
+                nome = token.id;
+                lerProximoToken();
+                if (mais_var(ref nome))
+                {
+                    return true;
+                }
+                escreva("13");
+                return false;
+            }
+            escreva("12");
+            return false;
+        }
+
+        private bool mais_var(ref string nome)
         {
             if (token.id == ",")
             {
-                if (variaveis())
+                if (variaveis(ref nome))
+                {
+                    return true;
+                }
+                escreva("14");
+                return false;
+            }
+            return true;
+        }
+
+        private bool mais_var(ref string[] nome, ref int contadorVariaveis)
+        {
+            if (token.id == ",")
+            {
+                if (variaveis(ref nome, ref contadorVariaveis))
                 {
                     return true;
                 }
@@ -180,27 +232,34 @@ namespace Compilador
         {
             if (token.id == "procedure")
             {
-                if (parametros())
+                lerProximoToken();
+                if (token.tipo == "ident")
                 {
-                    if (corpo_p())
+                    string escopo = token.id;
+                    insereSimbolo(token.id, "ident_procedimento", "", "");
+                    escreva("Iserido nome de procedimento", token.id, "ident_procedimento", "", "");
+                    if (parametros(escopo))
                     {
-                        return true;
+                        if (corpo_p(escopo))
+                        {
+                            return true;
+                        }
+                        escreva("16");
+                        return false;
                     }
-                    escreva("16");
+                    escreva("15");
                     return false;
                 }
-                escreva("15");
-                return false;
             }
             return true;
         }
 
-        private bool parametros()
+        private bool parametros(string escopo)
         {
             lerProximoToken();
             if (token.id == "(")
             {
-                if (lista_par())
+                if (lista_par(escopo))
                 {
                     lerProximoToken();
                     if (token.id == ")")
@@ -216,18 +275,27 @@ namespace Compilador
             return true;
         }
 
-        private bool lista_par()
+        private bool lista_par(string escopo)
         {
-            if (variaveis())
+            string nome = "";
+            string tipo = "";
+            string categoria = "parametro";
+
+            if (variaveis(ref nome))
             {
                 lerProximoToken();
                 if (token.id == ":")
                 {
-                    if (tipo_var())
+                    if (tipo_var(ref tipo))
                     {
-                        if (mais_par())
+                        if (insereSimbolo(nome, categoria, escopo, tipo))
                         {
-                            return true;
+                            escreva("Parametro: ", nome, categoria, escopo, tipo);
+                            if (mais_par(escopo))
+                            {
+                                return true;
+                            }
+                            return false;
                         }
                         escreva("22");
                         return false;
@@ -242,12 +310,12 @@ namespace Compilador
             return false;
         }
 
-        private bool mais_par()
+        private bool mais_par(string escopo)
         {
             lerProximoToken();
             if (token.id == ";")
             {
-                if (lista_par())
+                if (lista_par(escopo))
                 {
                     return true;
                 }
@@ -257,16 +325,14 @@ namespace Compilador
             return true;
         }
 
-        private bool corpo_p()
+        private bool corpo_p(string escopo)
         {
-            lerProximoToken();
-            if (dc_loc())
+            if (dc_loc(escopo))
             {
                 if (token.id == "begin")
                 {
                     if (comandos())
                     {
-                        //lerProximoToken();
                         if (token.id == "end")
                         {
                             return true;
@@ -284,12 +350,12 @@ namespace Compilador
             return false;
         }
 
-        private bool dc_loc()
+        private bool dc_loc(string escopo)
         {
-            if (dc_v())
+            if (dc_v(escopo))
             {
                 //lerProximoToken();
-                if (mais_dcloc())
+                if (mais_dcloc(escopo))
                 {
                     return true;
                 }
@@ -299,13 +365,13 @@ namespace Compilador
             return true;
         }
 
-        private bool mais_dcloc()
+        private bool mais_dcloc(string escopo)
         {
             //lerProximoToken();
             if (token.id == ";")
             {
                 lerProximoToken();
-                if (dc_loc())
+                if (dc_loc(escopo))
                 {
                     return true;
                 }
@@ -725,14 +791,19 @@ namespace Compilador
         }
 
 
-        private void escreva(string erro)
+        private void escreva(string par)
         {
-            Console.WriteLine(erro);
+            Console.WriteLine(par);
         }
 
-        private void escreva(string erro, string par)
+        private void escreva(string par1, string par2)
         {
-            Console.WriteLine(erro, par);
+            Console.WriteLine(par1, par2);
+        }
+
+        private void escreva(string mensagem, string par2, string par3, string par4, string par5)
+        {
+            Console.WriteLine(mensagem, par2 + " " + par3 + " " + par4 + " " + par5);
         }
 
         private void lerProximoToken()
