@@ -13,17 +13,26 @@ namespace Compilador
             categoria = "";
             escopo = "";
             tipo = "";
-            //posicao = 1;
+            posicao = 1;
             proximoSimbolo = null;
         }
 
-        public Simbolo(string nome, string categoria, string escopo, string tipo/*, int posicao*/)
+        public Simbolo(string nome, string categoria, string escopo, string tipo)
         {
             this.nome = nome;
             this.categoria = categoria;
             this.escopo = escopo;
             this.tipo = tipo;
-            //this.posicao = posicao;
+            this.proximoSimbolo = null;
+        }
+
+        public Simbolo(string nome, string categoria, string escopo, string tipo, int posicao)
+        {
+            this.nome = nome;
+            this.categoria = categoria;
+            this.escopo = escopo;
+            this.tipo = tipo;
+            this.posicao = posicao;
             this.proximoSimbolo = null;
         }
     }
