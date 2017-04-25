@@ -30,7 +30,6 @@ namespace Compilador
             //}
             codigo.Close();
             Console.ReadKey();
-            
         }
     }
 }
