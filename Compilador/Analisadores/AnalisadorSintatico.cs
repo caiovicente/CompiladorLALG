@@ -197,6 +197,7 @@ namespace Compilador
 
         private bool variaveis(string escopo)//var3
         {
+            lerProximoToken();
             if (token.tipo == "ident")
             {
                 if (buscaSimbolo(token.id, escopo))
@@ -495,9 +496,9 @@ namespace Compilador
                 {
                     if (variaveis(escopo))//var3
                     {
-                        lerProximoToken();
                         if (token.id == ")")
                         {
+                            lerProximoToken();
                             return true;
                         }
                         return false;
@@ -514,9 +515,9 @@ namespace Compilador
                 {
                     if (variaveis(escopo))//var3
                     {
-                        lerProximoToken();
                         if (token.id == ")")
                         {
+                            lerProximoToken();
                             return true;
                         }
                         return false;
@@ -786,7 +787,6 @@ namespace Compilador
 
         private bool fator()
         {
-            //lerProximoToken();
             if (token.tipo == "ident")
             {
                 return true;
@@ -841,7 +841,7 @@ namespace Compilador
             }
             if (buscaSimbolo(nome, escopo))
             {
-                escreva("A variável '{0}' já foi declarada nesse escopo", nome);
+                Console.WriteLine("A variável '{0}' já foi declarada nesse escopo", nome);
                 return false;
             }
             var aux = tabelaSimbolo.proximoSimbolo;
@@ -864,7 +864,7 @@ namespace Compilador
             }
             if (buscaSimbolo(nome, escopo))
             {
-                escreva("A variável '{0}' já foi declarada nesse escopo", nome);
+                Console.WriteLine("A variável '{0}' já foi declarada nesse escopo", nome);
                 return false;
             }
             var aux = tabelaSimbolo.proximoSimbolo;
