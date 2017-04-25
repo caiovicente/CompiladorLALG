@@ -14,7 +14,7 @@ namespace Compilador
     {
         static void Main(string[] args)
         {
-            StreamReader codigo = new StreamReader(@"C:\Users\33236\Desktop\teste.txt");
+            StreamReader codigo = new StreamReader(@"C:\Users\Caio\Desktop\teste.txt");
             
             AnalisadorLexico analisadorLexico = new AnalisadorLexico();
             Console.WriteLine(analisadorLexico.realizaAnaliseLexica(codigo) ? "Passou no Léxico" : "Não passou no Léxico");

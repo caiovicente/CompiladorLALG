@@ -10,7 +10,7 @@ namespace Compilador
         private string escopo;
         private Simbolo tabelaSimbolo = new Simbolo();
         private Parametro tabelaParametro;
-        
+        int posicao = 0;
         public bool realizaAnaliseSintatica(AnalisadorLexico analisadorLexico)
         {
             token = new Token();
@@ -131,7 +131,6 @@ namespace Compilador
                                 {
                                     return false;
                                 }
-
                             }
                             lerProximoToken();
                             return true;
@@ -228,7 +227,7 @@ namespace Compilador
             return true;
         }
 
-        private bool mais_var(string escopo)
+        private bool mais_var(string escopo)//var3
         {
             if (token.id == ";")
             {
@@ -254,6 +253,7 @@ namespace Compilador
                     Console.WriteLine("Inserido simbolo | nome: {0} | categoria: '{1}'", token.id, "ident_procedimento");
                     if (parametros(escopo))
                     {
+                        lerProximoToken();
                         if (corpo_p(escopo))
                         {
                             return true;
@@ -275,7 +275,6 @@ namespace Compilador
             {
                 if (lista_par(escopo))
                 {
-                    lerProximoToken();
                     if (token.id == ")")
                     {
                         return true;
@@ -294,7 +293,7 @@ namespace Compilador
             string nome = "";
             string tipo = "";
             string categoria = "parametro";
-            int posicao = 1;
+            
 
             if (variaveis(ref nome, ref posicao))//var2
             {
