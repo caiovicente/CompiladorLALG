@@ -64,6 +64,7 @@ namespace Compilador
                 }
                 return false;
             }
+
             return false;
         }
 
@@ -77,6 +78,7 @@ namespace Compilador
                 }
                 return false;
             }
+
             if (dc_p())
             {
                 if (mais_dc())
@@ -85,6 +87,7 @@ namespace Compilador
                 }
                 return false;
             }
+
             return true;
         }
 
@@ -99,6 +102,8 @@ namespace Compilador
                 }
                 return false;
             }
+
+
             return true;
         }
 
@@ -107,7 +112,7 @@ namespace Compilador
             if (token.id == "var")
             {
                 lerProximoToken();
-                if (variaveis()) //var1
+                if (variaveis())
                 {
                     if (token.id == ":")
                     {
@@ -122,7 +127,7 @@ namespace Compilador
                 }
                 return false;
             }
-            return true;
+            return false;
         }
 
         private bool tipo_var()
@@ -131,12 +136,14 @@ namespace Compilador
             {
                 lerProximoToken();
                 return true;
+
             }
             if (token.id == "real")
             {
                 lerProximoToken();
                 return true;
             }
+            
             return false;
         }
 
@@ -151,6 +158,7 @@ namespace Compilador
                 }
                 return false;
             }
+            
             return false;
         }
 
@@ -163,8 +171,10 @@ namespace Compilador
                 {
                     return true;
                 }
-                return true;
+                return false;
             }
+
+
             return true;
         }
 
@@ -207,12 +217,14 @@ namespace Compilador
                 }
                 return false;
             }
+
+
             return true;
         }
 
         private bool lista_par()
         {
-            if (variaveis())//var2
+            if (variaveis())
             {
                 if (token.id == ":")
                 {
@@ -243,6 +255,8 @@ namespace Compilador
                 }
                 return false;
             }
+
+
             return true;
         }
 
@@ -279,6 +293,7 @@ namespace Compilador
                 }
                 return false;
             }
+
             return true;
         }
 
@@ -293,6 +308,7 @@ namespace Compilador
                 }
                 return false;
             }
+
             return true;
         }
 
@@ -312,6 +328,8 @@ namespace Compilador
                 }
                 return false;
             }
+
+
             return true;
         }
 
@@ -340,6 +358,7 @@ namespace Compilador
                 }
                 return false;
             }
+
             return true;
         }
 
@@ -354,6 +373,7 @@ namespace Compilador
                 }
                 return false;
             }
+
             return true;
         }
 
@@ -381,6 +401,7 @@ namespace Compilador
                 }
                 return false;
             }
+
             return true;
         }
 
@@ -392,7 +413,7 @@ namespace Compilador
                 if (token.id == "(")
                 {
                     lerProximoToken();
-                    if (variaveis())//var3
+                    if (variaveis())
                     {
                         if (token.id == ")")
                         {
@@ -412,7 +433,7 @@ namespace Compilador
                 if (token.id == "(")
                 {
                     lerProximoToken();
-                    if (variaveis())//var3
+                    if (variaveis())
                     {
                         if (token.id == ")")
                         {
@@ -425,7 +446,7 @@ namespace Compilador
                 }
                 return false;
             }
-            //-----------------------------------
+
             if (token.id == "while")
             {
                 lerProximoToken();
@@ -503,6 +524,7 @@ namespace Compilador
                 }
                 return false;
             }
+
             if (lista_arg())
             {
                 return true;
@@ -594,6 +616,7 @@ namespace Compilador
                 lerProximoToken();
                 return true;
             }
+
             return true;
         }
 
@@ -677,6 +700,7 @@ namespace Compilador
                 lerProximoToken();
                 return true;
             }
+
             return false;
         }
 
@@ -722,7 +746,7 @@ namespace Compilador
         private void lerProximoToken()
         {
             token = analisadorLexico.retornaToken();
-            Console.WriteLine(token.id);
+            //Console.WriteLine(token.id);
         }
 
         //private bool insereSimbolo(string nome, string categoria, string escopo, string tipo)
