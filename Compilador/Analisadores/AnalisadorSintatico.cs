@@ -29,23 +29,18 @@ namespace Compilador
                 if (token.tipo == "ident")
                 {
                     lerProximoToken();
-                    //insereSimbolo(token.id, "ident_programa", "", "");
-                    escopo = token.id;
                     if (corpo())
                     {
                         if (token.id == ".")
                         {
                             return true;
                         }
-                        //escreva("Falta identificador '.'");
                         return false;
                     }
                     return false;
                 }
-                //escreva("Falta ident de nome do programa");
                 return false;
             }
-            //escreva("Falta ident 'program'");
             return false;
         }
 
@@ -63,16 +58,12 @@ namespace Compilador
                             lerProximoToken();
                             return true;
                         }
-                        //escreva("4");
                         return false;
                     }
-                    //escreva("3");
                     return false;
                 }
-                //escreva("2");
                 return false;
             }
-            //escreva("1");
             return false;
         }
 
@@ -84,18 +75,16 @@ namespace Compilador
                 {
                     return true;
                 }
-                //escreva("6");
                 return false;
             }
             if (dc_p())
             {
-                if (mais_dc()) //Arrumar isso
+                if (mais_dc())
                 {
                     return true;
                 }
                 return false;
             }
-            //escreva("5");
             return true;
         }
 
@@ -108,7 +97,6 @@ namespace Compilador
                 {
                     return true;
                 }
-                //escreva("7");
                 return false;
             }
             return true;
@@ -126,26 +114,12 @@ namespace Compilador
                         lerProximoToken();
                         if (tipo_var())
                         {
-                            //foreach (var nome in nomes)
-                            //{
-                            //    if (insereSimbolo(nome, categoria, escopo, tipo))
-                            //    {
-                            //        //Console.WriteLine("Inserido simbolo | nome: {0} | categoria: {1} | escopo: {2} | tipo: {3}", nome, categoria, escopo, tipo);
-                            //    }
-                            //    else
-                            //    {
-                            //        return false;
-                            //    }
-                            //}
                             return true;
                         }
-                        //escreva("10");
                         return false;
                     }
-                    //escreva("9");
                     return false;
                 }
-                //escreva("8");
                 return false;
             }
             return true;
@@ -163,7 +137,6 @@ namespace Compilador
                 lerProximoToken();
                 return true;
             }
-            //escreva("11");
             return false;
         }
 
@@ -176,10 +149,8 @@ namespace Compilador
                 {
                     return true;
                 }
-                //escreva("13");
                 return false;
             }
-            //escreva("12");
             return false;
         }
 
@@ -232,10 +203,8 @@ namespace Compilador
                         lerProximoToken();
                         return true;
                     }
-                    //escreva("18");
                     return false;
                 }
-                //escreva("17");
                 return false;
             }
             return true;
@@ -256,13 +225,10 @@ namespace Compilador
                         }
                         return false;
                     }
-                    //escreva("21");
                     return false;
                 }
-                //escreva("20");
                 return false;
             }
-            //escreva("19");
             return false;
         }
 
@@ -275,7 +241,6 @@ namespace Compilador
                 {
                     return true;
                 }
-                //escreva("23");
                 return false;
             }
             return true;
@@ -295,16 +260,12 @@ namespace Compilador
                             lerProximoToken();
                             return true;
                         }
-                        //escreva("27");
                         return false;
                     }
-                    //escreva("26");
                     return false;
                 }
-                //escreva("25");
                 return false;
             }
-            //escreva("24");
             return false;
         }
 
@@ -316,7 +277,6 @@ namespace Compilador
                 {
                     return true;
                 }
-                //escreva("28");
                 return false;
             }
             return true;
@@ -331,7 +291,6 @@ namespace Compilador
                 {
                     return true;
                 }
-                //escreva("29");
                 return false;
             }
             return true;
@@ -349,10 +308,8 @@ namespace Compilador
                         lerProximoToken();
                         return true;
                     }
-                    //escreva("31'");
                     return false;
                 }
-                //escreva("30");
                 return false;
             }
             return true;
@@ -367,10 +324,8 @@ namespace Compilador
                 {
                     return true;
                 }
-                //escreva("33");
                 return false;
             }
-            //escreva("32");
             return false;
         }
 
