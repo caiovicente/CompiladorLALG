@@ -80,7 +80,7 @@ namespace Compilador
                             break;
                         }
                         erroLexico = true;
-                        Console.WriteLine("Erro Léxico! 1");
+                        //Console.WriteLine("Erro Léxico! 1");
                         //throw new Exception();
                         break; //fim case 0
 
@@ -110,7 +110,7 @@ namespace Compilador
                             break;
                         }
                         erroLexico = true;
-                        Console.WriteLine("Erro Léxico! Caracter não permitido!");
+                        //Console.WriteLine("Erro Léxico! Caracter não permitido!");
                         break;
 
                     case 2: /* Número inteiro */
@@ -135,7 +135,7 @@ namespace Compilador
                             break;
                         }
                         erroLexico = true;
-                        Console.WriteLine("Erro Léxico! Num");
+                        //Console.WriteLine("Erro Léxico! Num");
                         break;
 
                     case 3: /* Aux Número real */
@@ -147,7 +147,7 @@ namespace Compilador
                             break;
                         }
                         erroLexico = true;
-                        Console.WriteLine("Erro Léxico!! 2");
+                        //Console.WriteLine("Erro Léxico!! 2");
                         break;
 
                     case 4: /* Númeor real */
@@ -165,7 +165,7 @@ namespace Compilador
                             break;
                         }
                         erroLexico = true;
-                        Console.WriteLine("Erro Léxico!! 3");
+                        //Console.WriteLine("Erro Léxico!! 3");
                         break;
 
 
@@ -191,7 +191,7 @@ namespace Compilador
                             break;
                         }
                         erroLexico = true;
-                        Console.WriteLine("Erro Léxico!! 4");
+                        //Console.WriteLine("Erro Léxico!! 4");
                         break;
                     case 6: /* Comentário '}' */
                         while (caracter != '}' || verificaEspacamento(caracter))
@@ -214,7 +214,7 @@ namespace Compilador
                                 break;
                             }
                             erroLexico = true;
-                            Console.WriteLine("Erro Léxico, simbolo duplo não existe!");
+                            //Console.WriteLine("Erro Léxico, simbolo duplo não existe!");
                             break;
                         }
                         if (verificaEspacamento(caracter) || char.IsLetterOrDigit(caracter))
@@ -226,7 +226,7 @@ namespace Compilador
                             break;
                         }
                         erroLexico = true;
-                        Console.WriteLine("Erro Léxico!! 5");
+                        //Console.WriteLine("Erro Léxico!! 5");
                         break;
                 }//fim switch
             }//fim while

@@ -30,7 +30,7 @@ namespace Compilador
                 {
                     insereSimbolo(token.id, "ident_programa", "", "");
                     escopo = token.id;
-                    Console.WriteLine("Inserido simbolo | nome: {0} | categoria: '{1}'" , token.id , "ident_programa");
+                   // Console.WriteLine("Inserido simbolo | nome: {0} | categoria: '{1}'" , token.id , "ident_programa");
                     if (corpo(escopo))
                     {
                         lerProximoToken();
@@ -38,15 +38,15 @@ namespace Compilador
                         {
                             return true;
                         }
-                        escreva("Falta identificador '.'");
+                        //escreva("Falta identificador '.'");
                         return false;
                     }
                     return false;
                 }
-                escreva("Falta ident de nome do programa");
+                //escreva("Falta ident de nome do programa");
                 return false;
             }
-            escreva("Falta ident 'program'");
+            //escreva("Falta ident 'program'");
             return false;
         }
 
@@ -64,16 +64,16 @@ namespace Compilador
                         {
                             return true;
                         }
-                        escreva("4");
+                        //escreva("4");
                         return false;
                     }
-                    escreva("3");
+                    //escreva("3");
                     return false;
                 }
-                escreva("2");
+                //escreva("2");
                 return false;
             }
-            escreva("1");
+            //escreva("1");
             return false;
         }
 
@@ -85,10 +85,10 @@ namespace Compilador
                 {
                     return true;
                 }
-                escreva("6");
+                //escreva("6");
                 return false;
             }
-            escreva("5");
+            //escreva("5");
             return false;
         }
 
@@ -101,7 +101,7 @@ namespace Compilador
                 {
                     return true;
                 }
-                escreva("7");
+                //escreva("7");
                 return false;
             }
             return true;
@@ -125,7 +125,7 @@ namespace Compilador
                             {
                                 if (insereSimbolo(nome, categoria, escopo, tipo))
                                 {
-                                    Console.WriteLine("Inserido simbolo | nome: {0} | categoria: {1} | escopo: {2} | tipo: {3}", nome, categoria, escopo, tipo);
+                                    //Console.WriteLine("Inserido simbolo | nome: {0} | categoria: {1} | escopo: {2} | tipo: {3}", nome, categoria, escopo, tipo);
                                 }
                                 else
                                 {
@@ -135,13 +135,13 @@ namespace Compilador
                             lerProximoToken();
                             return true;
                         }
-                        escreva("10");
+                        //escreva("10");
                         return false;
                     }
-                    escreva("9");
+                    //escreva("9");
                     return false;
                 }
-                escreva("8");
+                //escreva("8");
                 return false;
             }
             return true;
@@ -160,7 +160,7 @@ namespace Compilador
                 tipo = "real";
                 return true;
             }
-            escreva("11");
+            //escreva("11");
             return false;
         }
 
@@ -175,10 +175,10 @@ namespace Compilador
                 {
                     return true;
                 }
-                escreva("13");
+                //escreva("13");
                 return false;
             }
-            escreva("12");
+            //escreva("12");
             return false;
         }
 
@@ -191,7 +191,7 @@ namespace Compilador
                 posicao++;
                 return true;
             }
-            escreva("12");
+            //escreva("12");
             return false;
         }
 
@@ -222,7 +222,7 @@ namespace Compilador
                 {
                     return true;
                 }
-                escreva("14");
+                //escreva("14");
                 return false;
             }
             return true;
@@ -251,7 +251,7 @@ namespace Compilador
                 {
                     string escopo = token.id;
                     insereSimbolo(token.id, "ident_procedimento", "", "");
-                    Console.WriteLine("Inserido simbolo | nome: {0} | categoria: '{1}'", token.id, "ident_procedimento");
+                    //Console.WriteLine("Inserido simbolo | nome: {0} | categoria: '{1}'", token.id, "ident_procedimento");
                     if (parametros(escopo))
                     {
                         lerProximoToken();
@@ -259,10 +259,10 @@ namespace Compilador
                         {
                             return true;
                         }
-                        escreva("16");
+                        //escreva("16");
                         return false;
                     }
-                    escreva("15");
+                    //escreva("15");
                     return false;
                 }
             }
@@ -280,10 +280,10 @@ namespace Compilador
                     {
                         return true;
                     }
-                    escreva("18");
+                    //escreva("18");
                     return false;
                 }
-                escreva("17");
+                //escreva("17");
                 return false;
             }
             return true;
@@ -305,23 +305,23 @@ namespace Compilador
                     {
                         if (insereSimbolo(nome, categoria, escopo, tipo, posicao))
                         {
-                            Console.WriteLine("Inserido parametro nome: {0} | categoria: {1} | escopo: {2} | tipo: {3} | posicao: {4}", nome, categoria, escopo, tipo, posicao);
+                            //Console.WriteLine("Inserido parametro nome: {0} | categoria: {1} | escopo: {2} | tipo: {3} | posicao: {4}", nome, categoria, escopo, tipo, posicao);
                             if (mais_par(escopo))
                             {
                                 return true;
                             }
                             return false;
                         }
-                        escreva("22");
+                        //escreva("22");
                         return false;
                     }
-                    escreva("21");
+                    //escreva("21");
                     return false;
                 }
-                escreva("20");
+                //escreva("20");
                 return false;
             }
-            escreva("19");
+            //escreva("19");
             return false;
         }
 
@@ -335,7 +335,7 @@ namespace Compilador
                 {
                     return true;
                 }
-                escreva("23");
+                //escreva("23");
                 return false;
             }
             return true;
@@ -353,16 +353,16 @@ namespace Compilador
                         {
                             return true;
                         }
-                        escreva("27");
+                        //escreva("27");
                         return false;
                     }
-                    escreva("26");
+                    //escreva("26");
                     return false;
                 }
-                escreva("25");
+                //escreva("25");
                 return false;
             }
-            escreva("24");
+            //escreva("24");
             return false;
         }
 
@@ -374,7 +374,7 @@ namespace Compilador
                 {
                     return true;
                 }
-                escreva("28");
+                //escreva("28");
                 return false;
             }
             return true;
@@ -389,7 +389,7 @@ namespace Compilador
                 {
                     return true;
                 }
-                escreva("29");
+                //escreva("29");
                 return false;
             }
             return true;
@@ -407,10 +407,10 @@ namespace Compilador
                     {
                         return true;
                     }
-                    escreva("31'");
+                    //escreva("31'");
                     return false;
                 }
-                escreva("30");
+                //escreva("30");
                 return false;
             }
             return true;
@@ -425,10 +425,10 @@ namespace Compilador
                 {
                     return true;
                 }
-                escreva("33");
+                //escreva("33");
                 return false;
             }
-            escreva("32");
+            //escreva("32");
             return false;
         }
 
@@ -559,7 +559,7 @@ namespace Compilador
                     {
                         if (comandos())
                         {
-                            if (pfalsa())
+                            if (pfalsa(escopo))
                             {
                                 lerProximoToken();
                                 if (token.id == "$")
@@ -720,7 +720,6 @@ namespace Compilador
 
         private bool op_ad()
         {
-            //lerProximoToken();
             if (token.id == "+")
             {
                 return true;
@@ -739,7 +738,6 @@ namespace Compilador
             {
                 if (fator())
                 {
-                    //lerProximoToken();
                     if (mais_fatores())
                     {
                         return true;
@@ -814,16 +812,10 @@ namespace Compilador
             return false;
         }
 
-
-        private void escreva(string par)
-        {
-            Console.WriteLine(par);
-        }
-
-        private void escreva(string par1, string par2)
-        {
-            Console.WriteLine(par1, par2);
-        }
+        //private void escreva(string par)
+        //{
+        //    Console.WriteLine(par);
+        //}
 
         private void lerProximoToken()
         {
@@ -841,7 +833,7 @@ namespace Compilador
             }
             if (buscaSimbolo(nome, escopo))
             {
-                Console.WriteLine("A variável '{0}' já foi declarada nesse escopo", nome);
+                //Console.WriteLine("A variável '{0}' já foi declarada nesse escopo", nome);
                 return false;
             }
             var aux = tabelaSimbolo.proximoSimbolo;
@@ -864,7 +856,7 @@ namespace Compilador
             }
             if (buscaSimbolo(nome, escopo))
             {
-                Console.WriteLine("A variável '{0}' já foi declarada nesse escopo", nome);
+                //Console.WriteLine("A variável '{0}' já foi declarada nesse escopo", nome);
                 return false;
             }
             var aux = tabelaSimbolo.proximoSimbolo;
