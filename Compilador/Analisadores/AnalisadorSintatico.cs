@@ -15,6 +15,7 @@ namespace Compilador
         {
             token = new Token();
             this.analisadorLexico = analisadorLexico;
+            lerProximoToken();
             if (programa())
                 return true;
             return false;
@@ -22,18 +23,16 @@ namespace Compilador
 
         private bool programa()
         {
-            lerProximoToken();
             if (token.id == "program")
             {
                 lerProximoToken();
                 if (token.tipo == "ident")
                 {
-                    insereSimbolo(token.id, "ident_programa", "", "");
+                    lerProximoToken();
+                    //insereSimbolo(token.id, "ident_programa", "", "");
                     escopo = token.id;
-                   // Console.WriteLine("Inserido simbolo | nome: {0} | categoria: '{1}'" , token.id , "ident_programa");
-                    if (corpo(escopo))
+                    if (corpo())
                     {
-                        lerProximoToken();
                         if (token.id == ".")
                         {
                             return true;
@@ -50,18 +49,18 @@ namespace Compilador
             return false;
         }
 
-        private bool corpo(string escopo)
+        private bool corpo()
         {
-            lerProximoToken();
-            if (dc(escopo))
+            if (dc())
             {
-                lerProximoToken();
                 if (token.id == "begin")
                 {
-                    if (comandos(escopo))
+                    lerProximoToken();
+                    if (comandos())
                     {
                         if (token.id == "end")
                         {
+                            lerProximoToken();
                             return true;
                         }
                         //escreva("4");
@@ -77,27 +76,35 @@ namespace Compilador
             return false;
         }
 
-        private bool dc(string escopo)
+        private bool dc()
         {
-            if (dc_v(escopo) && dc_p())
+            if (dc_v())
             {
-                if (mais_dc(escopo))
+                if (mais_dc())
                 {
                     return true;
                 }
                 //escreva("6");
                 return false;
             }
+            if (dc_p())
+            {
+                if (mais_dc()) //Arrumar isso
+                {
+                    return true;
+                }
+                return false;
+            }
             //escreva("5");
-            return false;
+            return true;
         }
 
-        private bool mais_dc(string escopo)
+        private bool mais_dc()
         {
             if (token.id == ";")
             {
                 lerProximoToken();
-                if (dc(escopo))
+                if (dc())
                 {
                     return true;
                 }
@@ -107,32 +114,29 @@ namespace Compilador
             return true;
         }
 
-        private bool dc_v(string escopo)
+        private bool dc_v()
         {
-            string tipo = "";
-
             if (token.id == "var")
             {
-                string categoria = "variavel";
-                List<string> nomes = new List<string>();
-                if (variaveis(ref nomes)) //var1
+                lerProximoToken();
+                if (variaveis()) //var1
                 {
                     if (token.id == ":")
                     {
-                        if (tipo_var(ref tipo))
+                        lerProximoToken();
+                        if (tipo_var())
                         {
-                            foreach (var nome in nomes)
-                            {
-                                if (insereSimbolo(nome, categoria, escopo, tipo))
-                                {
-                                    //Console.WriteLine("Inserido simbolo | nome: {0} | categoria: {1} | escopo: {2} | tipo: {3}", nome, categoria, escopo, tipo);
-                                }
-                                else
-                                {
-                                    return false;
-                                }
-                            }
-                            lerProximoToken();
+                            //foreach (var nome in nomes)
+                            //{
+                            //    if (insereSimbolo(nome, categoria, escopo, tipo))
+                            //    {
+                            //        //Console.WriteLine("Inserido simbolo | nome: {0} | categoria: {1} | escopo: {2} | tipo: {3}", nome, categoria, escopo, tipo);
+                            //    }
+                            //    else
+                            //    {
+                            //        return false;
+                            //    }
+                            //}
                             return true;
                         }
                         //escreva("10");
@@ -147,31 +151,28 @@ namespace Compilador
             return true;
         }
 
-        private bool tipo_var(ref string tipo)
+        private bool tipo_var()
         {
-            lerProximoToken();
             if (token.id == "integer")
             {
-                tipo = "inteiro";
+                lerProximoToken();
                 return true;
             }
             if (token.id == "real")
             {
-                tipo = "real";
+                lerProximoToken();
                 return true;
             }
             //escreva("11");
             return false;
         }
 
-        private bool variaveis(ref List<string> nome)// var1
+        private bool variaveis()// var1
         {
-            lerProximoToken();
             if (token.tipo == "ident")
             {
-                nome.Add(token.id);
                 lerProximoToken();
-                if (mais_var(ref nome))
+                if (mais_var())
                 {
                     return true;
                 }
@@ -182,58 +183,12 @@ namespace Compilador
             return false;
         }
 
-        private bool variaveis(ref string nome, ref int posicao)//var2
-        {
-            lerProximoToken();
-            if (token.tipo == "ident")
-            {
-                nome = token.id;
-                posicao++;
-                return true;
-            }
-            //escreva("12");
-            return false;
-        }
-
-        private bool variaveis(string escopo)//var3
-        {
-            lerProximoToken();
-            if (token.tipo == "ident")
-            {
-                if (buscaSimbolo(token.id, escopo))
-                {
-                    lerProximoToken();
-                    if (mais_var(escopo))
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-                return false;
-            }
-            return false;
-        }
-
-        private bool mais_var(ref List<string> nomes)//var1
+        private bool mais_var()//var3
         {
             if (token.id == ",")
             {
-                if (variaveis(ref nomes))
-                {
-                    return true;
-                }
-                //escreva("14");
-                return false;
-            }
-            return true;
-        }
-
-        private bool mais_var(string escopo)//var3
-        {
-            if (token.id == ";")
-            {
                 lerProximoToken();
-                if (variaveis(escopo))
+                if (variaveis())
                 {
                     return true;
                 }
@@ -249,35 +204,32 @@ namespace Compilador
                 lerProximoToken();
                 if (token.tipo == "ident")
                 {
-                    string escopo = token.id;
-                    insereSimbolo(token.id, "ident_procedimento", "", "");
-                    //Console.WriteLine("Inserido simbolo | nome: {0} | categoria: '{1}'", token.id, "ident_procedimento");
-                    if (parametros(escopo))
+                    lerProximoToken();
+                    if (parametros())
                     {
-                        lerProximoToken();
-                        if (corpo_p(escopo))
+                        if (corpo_p())
                         {
                             return true;
                         }
-                        //escreva("16");
                         return false;
                     }
-                    //escreva("15");
                     return false;
                 }
+                return false;
             }
-            return true;
+            return false;
         }
 
-        private bool parametros(string escopo)
+        private bool parametros()
         {
-            lerProximoToken();
             if (token.id == "(")
             {
-                if (lista_par(escopo))
+                lerProximoToken();
+                if (lista_par())
                 {
                     if (token.id == ")")
                     {
+                        lerProximoToken();
                         return true;
                     }
                     //escreva("18");
@@ -289,30 +241,19 @@ namespace Compilador
             return true;
         }
 
-        private bool lista_par(string escopo)
+        private bool lista_par()
         {
-            string nome = "";
-            string tipo = "";
-            string categoria = "parametro";
-            
-
-            if (variaveis(ref nome, ref posicao))//var2
+            if (variaveis())//var2
             {
-                lerProximoToken();
                 if (token.id == ":")
                 {
-                    if (tipo_var(ref tipo))
+                    lerProximoToken();
+                    if (tipo_var())
                     {
-                        if (insereSimbolo(nome, categoria, escopo, tipo, posicao))
+                        if (mais_par())
                         {
-                            //Console.WriteLine("Inserido parametro nome: {0} | categoria: {1} | escopo: {2} | tipo: {3} | posicao: {4}", nome, categoria, escopo, tipo, posicao);
-                            if (mais_par(escopo))
-                            {
-                                return true;
-                            }
-                            return false;
+                            return true;
                         }
-                        //escreva("22");
                         return false;
                     }
                     //escreva("21");
@@ -325,13 +266,12 @@ namespace Compilador
             return false;
         }
 
-        private bool mais_par(string escopo)
+        private bool mais_par()
         {
-            lerProximoToken();
             if (token.id == ";")
             {
                 lerProximoToken();
-                if (lista_par(escopo))
+                if (lista_par())
                 {
                     return true;
                 }
@@ -341,16 +281,18 @@ namespace Compilador
             return true;
         }
 
-        private bool corpo_p(string escopo)
+        private bool corpo_p()
         {
-            if (dc_loc(escopo))
+            if (dc_loc())
             {
                 if (token.id == "begin")
                 {
-                    if (comandos(escopo))
+                    lerProximoToken();
+                    if (comandos())
                     {
                         if (token.id == "end")
                         {
+                            lerProximoToken();
                             return true;
                         }
                         //escreva("27");
@@ -366,11 +308,11 @@ namespace Compilador
             return false;
         }
 
-        private bool dc_loc(string escopo)
+        private bool dc_loc()
         {
-            if (dc_v(escopo))
+            if (dc_v())
             {
-                if (mais_dcloc(escopo))
+                if (mais_dcloc())
                 {
                     return true;
                 }
@@ -380,12 +322,12 @@ namespace Compilador
             return true;
         }
 
-        private bool mais_dcloc(string escopo)
+        private bool mais_dcloc()
         {
             if (token.id == ";")
             {
                 lerProximoToken();
-                if (dc_loc(escopo))
+                if (dc_loc())
                 {
                     return true;
                 }
@@ -397,14 +339,14 @@ namespace Compilador
 
         private bool lista_arg()
         {
-            lerProximoToken();
             if (token.id == "(")
             {
+                lerProximoToken();
                 if (argumentos())
                 {
-                    lerProximoToken();
                     if (token.id == ")")
                     {
+                        lerProximoToken();
                         return true;
                     }
                     //escreva("31'");
@@ -418,9 +360,9 @@ namespace Compilador
 
         private bool argumentos()
         {
-            lerProximoToken();
             if (token.tipo == "ident")
             {
+                lerProximoToken();
                 if (mais_ident())
                 {
                     return true;
@@ -434,9 +376,9 @@ namespace Compilador
 
         private bool mais_ident()
         {
-            lerProximoToken();
             if (token.id == ";")
             {
+                lerProximoToken();
                 if (argumentos())
                 {
                     return true;
@@ -446,12 +388,12 @@ namespace Compilador
             return true;
         }
 
-        private bool pfalsa(string escopo)
+        private bool pfalsa()
         {
-            lerProximoToken();
             if (token.id == "else")
             {
-                if (comandos(escopo))
+                lerProximoToken();
+                if (comandos())
                 {
                     return true;
                 }
@@ -460,11 +402,11 @@ namespace Compilador
             return true;
         }
 
-        private bool comandos(string escopo)
+        private bool comandos()
         {
-            if (comando(escopo))
+            if (comando())
             {
-                if (mais_comandos(escopo))
+                if (mais_comandos())
                 {
                     return true;
                 }
@@ -473,11 +415,12 @@ namespace Compilador
             return false;
         }
 
-        private bool mais_comandos(string escopo)
+        private bool mais_comandos()
         {
             if (token.id == ";")
             {
-                if (comandos(escopo))
+                lerProximoToken();
+                if (comandos())
                 {
                     return true;
                 }
@@ -486,15 +429,15 @@ namespace Compilador
             return true;
         }
 
-        private bool comando(string escopo)
+        private bool comando()
         {
-            lerProximoToken();
             if (token.id == "read")
             {
                 lerProximoToken();
                 if (token.id == "(")
                 {
-                    if (variaveis(escopo))//var3
+                    lerProximoToken();
+                    if (variaveis())//var3
                     {
                         if (token.id == ")")
                         {
@@ -513,7 +456,8 @@ namespace Compilador
                 lerProximoToken();
                 if (token.id == "(")
                 {
-                    if (variaveis(escopo))//var3
+                    lerProximoToken();
+                    if (variaveis())//var3
                     {
                         if (token.id == ")")
                         {
@@ -526,19 +470,20 @@ namespace Compilador
                 }
                 return false;
             }
-
+            //-----------------------------------
             if (token.id == "while")
             {
+                lerProximoToken();
                 if (condicao())
                 {
-                    lerProximoToken();
                     if (token.id == "do")
                     {
+                        lerProximoToken();
                         if (comandos())
                         {
-                            lerProximoToken();
                             if (token.id == "$")
                             {
+                                lerProximoToken();
                                 return true;
                             }
                             return false;
@@ -552,18 +497,19 @@ namespace Compilador
 
             if (token.id == "if")
             {
+                lerProximoToken();
                 if (condicao())
                 {
-                    lerProximoToken();
                     if (token.id == "then")
                     {
+                        lerProximoToken();
                         if (comandos())
                         {
-                            if (pfalsa(escopo))
+                            if (pfalsa())
                             {
-                                lerProximoToken();
                                 if (token.id == "$")
                                 {
+                                    lerProximoToken();
                                     return true;
                                 }
                                 return false;
@@ -579,6 +525,7 @@ namespace Compilador
 
             if (token.tipo == "ident")
             {
+                lerProximoToken();
                 if (restoIdent())
                 {
                     return true;
@@ -589,24 +536,12 @@ namespace Compilador
             return false;
         }
 
-        //
-        private bool comandos()
-        {
-            return true;
-        }
-
-        private bool pfalsa()
-        {
-            return true;
-        }
-
-        //
 
         private bool restoIdent()
         {
-            lerProximoToken();
             if (token.id == ":=")
             {
+                lerProximoToken();
                 if (expressao())
                 {
                     return true;
@@ -639,34 +574,39 @@ namespace Compilador
 
         private bool relacao()
         {
-            lerProximoToken();
             if (token.id == "=")
             {
+                lerProximoToken();
                 return true;
             }
 
             if (token.id == "<>")
             {
+                lerProximoToken();
                 return true;
             }
 
             if (token.id == ">=")
             {
+                lerProximoToken();
                 return true;
             }
 
             if (token.id == "<=")
             {
+                lerProximoToken();
                 return true;
             }
 
             if (token.id == ">")
             {
+                lerProximoToken();
                 return true;
             }
 
             if (token.id == "<")
             {
+                lerProximoToken();
                 return true;
             }
 
@@ -688,14 +628,15 @@ namespace Compilador
 
         private bool op_un()
         {
-            lerProximoToken();
             if (token.id == "+")
             {
+                lerProximoToken();
                 return true;
             }
 
             if (token.id == "-")
             {
+                lerProximoToken();
                 return true;
             }
             return true;
@@ -722,11 +663,13 @@ namespace Compilador
         {
             if (token.id == "+")
             {
+                lerProximoToken();
                 return true;
             }
 
             if (token.id == "-")
             {
+                lerProximoToken();
                 return true;
             }
             return false;
@@ -768,7 +711,6 @@ namespace Compilador
 
         private bool op_mul()
         {
-            lerProximoToken();
             if (token.id == "*")
             {
                 lerProximoToken();
@@ -787,22 +729,27 @@ namespace Compilador
         {
             if (token.tipo == "ident")
             {
+                lerProximoToken();
                 return true;
             }
             if (token.tipo == "numero_int")
             {
+                lerProximoToken();
                 return true;
             }
             if (token.tipo == "numero_real")
             {
+                lerProximoToken();
                 return true;
             }
             if (token.id == "(")
             {
+                lerProximoToken();
                 if (expressao())
                 {
                     if (token.id == ")")
                     {
+                        lerProximoToken();
                         return true;
                     }
                     return false;
@@ -820,66 +767,67 @@ namespace Compilador
         private void lerProximoToken()
         {
             token = analisadorLexico.retornaToken();
+            Console.WriteLine(token.id);
         }
 
-        private bool insereSimbolo(string nome, string categoria, string escopo, string tipo)
-        {
-            Simbolo simbolo = new Simbolo(nome, categoria, escopo, tipo);
+        //private bool insereSimbolo(string nome, string categoria, string escopo, string tipo)
+        //{
+        //    Simbolo simbolo = new Simbolo(nome, categoria, escopo, tipo);
 
-            if (tabelaSimbolo.proximoSimbolo == null)
-            {
-                tabelaSimbolo.proximoSimbolo = simbolo;
-                return true;
-            }
-            if (buscaSimbolo(nome, escopo))
-            {
-                //Console.WriteLine("A variável '{0}' já foi declarada nesse escopo", nome);
-                return false;
-            }
-            var aux = tabelaSimbolo.proximoSimbolo;
-            while (aux.proximoSimbolo != null)
-            {
-                aux = aux.proximoSimbolo;
-            }
-            aux.proximoSimbolo = simbolo;
-            return true;
-        }
+        //    if (tabelaSimbolo.proximoSimbolo == null)
+        //    {
+        //        tabelaSimbolo.proximoSimbolo = simbolo;
+        //        return true;
+        //    }
+        //    if (buscaSimbolo(nome, escopo))
+        //    {
+        //        //Console.WriteLine("A variável '{0}' já foi declarada nesse escopo", nome);
+        //        return false;
+        //    }
+        //    var aux = tabelaSimbolo.proximoSimbolo;
+        //    while (aux.proximoSimbolo != null)
+        //    {
+        //        aux = aux.proximoSimbolo;
+        //    }
+        //    aux.proximoSimbolo = simbolo;
+        //    return true;
+        //}
 
-        private bool insereSimbolo(string nome, string categoria, string escopo, string tipo, int posicao)
-        {
-            Simbolo simbolo = new Simbolo(nome, categoria, escopo, tipo, posicao);
+        //private bool insereSimbolo(string nome, string categoria, string escopo, string tipo, int posicao)
+        //{
+        //    Simbolo simbolo = new Simbolo(nome, categoria, escopo, tipo, posicao);
 
-            if (tabelaSimbolo.proximoSimbolo == null)
-            {
-                tabelaSimbolo.proximoSimbolo = simbolo;
-                return true;
-            }
-            if (buscaSimbolo(nome, escopo))
-            {
-                //Console.WriteLine("A variável '{0}' já foi declarada nesse escopo", nome);
-                return false;
-            }
-            var aux = tabelaSimbolo.proximoSimbolo;
-            while (aux.proximoSimbolo != null)
-            {
-                aux = aux.proximoSimbolo;
-            }
-            aux.proximoSimbolo = simbolo;
-            return true;
-        }
+        //    if (tabelaSimbolo.proximoSimbolo == null)
+        //    {
+        //        tabelaSimbolo.proximoSimbolo = simbolo;
+        //        return true;
+        //    }
+        //    if (buscaSimbolo(nome, escopo))
+        //    {
+        //        //Console.WriteLine("A variável '{0}' já foi declarada nesse escopo", nome);
+        //        return false;
+        //    }
+        //    var aux = tabelaSimbolo.proximoSimbolo;
+        //    while (aux.proximoSimbolo != null)
+        //    {
+        //        aux = aux.proximoSimbolo;
+        //    }
+        //    aux.proximoSimbolo = simbolo;
+        //    return true;
+        //}
 
-        private bool buscaSimbolo(string nome, string escopo)
-        {
-            Simbolo simbolo = tabelaSimbolo.proximoSimbolo;
-            while (simbolo != null)
-            {
-                if (simbolo.nome == nome && simbolo.escopo == escopo)
-                {
-                    return true;
-                }
-                simbolo = simbolo.proximoSimbolo;
-            }
-            return false;
-        }
+        //private bool buscaSimbolo(string nome, string escopo)
+        //{
+        //    Simbolo simbolo = tabelaSimbolo.proximoSimbolo;
+        //    while (simbolo != null)
+        //    {
+        //        if (simbolo.nome == nome && simbolo.escopo == escopo)
+        //        {
+        //            return true;
+        //        }
+        //        simbolo = simbolo.proximoSimbolo;
+        //    }
+        //    return false;
+        //}
     }
 }
