@@ -590,6 +590,14 @@ namespace Compilador
 
             if (token.tipo == "ident")
             {
+                if (buscaSimbolo(token.id, escopo))
+                {
+                    
+                }
+                else
+                {
+                    Console.WriteLine("Variável '{0}' não declarada", token.id);
+                }
                 lerProximoToken();
                 if (restoIdent())
                 {
