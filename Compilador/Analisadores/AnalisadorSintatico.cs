@@ -17,10 +17,10 @@ namespace Compilador
             lerProximoToken();
             if (programa())
             {
-                imprimeTabela();
+                //imprimeTabela();
                 return true;
             }
-            imprimeTabela();
+            //imprimeTabela();
             return false;
         }
 
@@ -209,14 +209,14 @@ namespace Compilador
                     }
                     else
                     {
-                        Console.WriteLine("Variável '{0}' não declarada no escopo atual", token.id);
+                        Console.WriteLine("Variável '{0}' não declarada no escopo global", token.id);
                         return false;
                     }
                     
                 }
                 else
                 {
-                    if (buscaSimbolo(token.id))
+                    if (buscaSimbolo(token.id, escopo, "variavel") || buscaSimbolo(token.id, "global", "variavel"))
                     {
                         
                     }
@@ -297,7 +297,7 @@ namespace Compilador
 
         private bool lista_par(string escopo)
         {
-            List<string> nomes = null;
+            List<string> nomes = new List<string>();
             string tipo = "";
             string categoria = "parametros";
             int posicao = 1;
@@ -912,6 +912,20 @@ namespace Compilador
             while (simbolo != null)
             {
                 if (simbolo.nome == nome && simbolo.escopo == escopo)
+                {
+                    return true;
+                }
+                simbolo = simbolo.proximoSimbolo;
+            }
+            return false;
+        }
+
+        private bool buscaSimbolo(string nome, string escopo, string categoria)
+        {
+            Simbolo simbolo = tabelaSimbolo.proximoSimbolo;
+            while (simbolo != null)
+            {
+                if (simbolo.nome == nome && simbolo.escopo == escopo && simbolo.categoria == categoria)
                 {
                     return true;
                 }
