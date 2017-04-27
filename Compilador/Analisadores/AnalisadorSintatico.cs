@@ -724,7 +724,7 @@ namespace Compilador
             if (token.id == "(")
             {
                 lerProximoToken();
-                if (expressao())
+                if (expressao()) /////
                 {
                     if (token.id == ")")
                     {
@@ -749,64 +749,64 @@ namespace Compilador
             //Console.WriteLine(token.id);
         }
 
-        //private bool insereSimbolo(string nome, string categoria, string escopo, string tipo)
-        //{
-        //    Simbolo simbolo = new Simbolo(nome, categoria, escopo, tipo);
+        private bool insereSimbolo(string nome, string categoria, string escopo, string tipo)
+        {
+            Simbolo simbolo = new Simbolo(nome, categoria, escopo, tipo);
 
-        //    if (tabelaSimbolo.proximoSimbolo == null)
-        //    {
-        //        tabelaSimbolo.proximoSimbolo = simbolo;
-        //        return true;
-        //    }
-        //    if (buscaSimbolo(nome, escopo))
-        //    {
-        //        //Console.WriteLine("A variável '{0}' já foi declarada nesse escopo", nome);
-        //        return false;
-        //    }
-        //    var aux = tabelaSimbolo.proximoSimbolo;
-        //    while (aux.proximoSimbolo != null)
-        //    {
-        //        aux = aux.proximoSimbolo;
-        //    }
-        //    aux.proximoSimbolo = simbolo;
-        //    return true;
-        //}
+            if (tabelaSimbolo.proximoSimbolo == null)
+            {
+                tabelaSimbolo.proximoSimbolo = simbolo;
+                return true;
+            }
+            if (buscaSimbolo(nome, escopo))
+            {
+                //Console.WriteLine("A variável '{0}' já foi declarada nesse escopo", nome);
+                return false;
+            }
+            var aux = tabelaSimbolo.proximoSimbolo;
+            while (aux.proximoSimbolo != null)
+            {
+                aux = aux.proximoSimbolo;
+            }
+            aux.proximoSimbolo = simbolo;
+            return true;
+        }
 
-        //private bool insereSimbolo(string nome, string categoria, string escopo, string tipo, int posicao)
-        //{
-        //    Simbolo simbolo = new Simbolo(nome, categoria, escopo, tipo, posicao);
+        private bool insereSimbolo(string nome, string categoria, string escopo, string tipo, int posicao)
+        {
+            Simbolo simbolo = new Simbolo(nome, categoria, escopo, tipo, posicao);
 
-        //    if (tabelaSimbolo.proximoSimbolo == null)
-        //    {
-        //        tabelaSimbolo.proximoSimbolo = simbolo;
-        //        return true;
-        //    }
-        //    if (buscaSimbolo(nome, escopo))
-        //    {
-        //        //Console.WriteLine("A variável '{0}' já foi declarada nesse escopo", nome);
-        //        return false;
-        //    }
-        //    var aux = tabelaSimbolo.proximoSimbolo;
-        //    while (aux.proximoSimbolo != null)
-        //    {
-        //        aux = aux.proximoSimbolo;
-        //    }
-        //    aux.proximoSimbolo = simbolo;
-        //    return true;
-        //}
+            if (tabelaSimbolo.proximoSimbolo == null)
+            {
+                tabelaSimbolo.proximoSimbolo = simbolo;
+                return true;
+            }
+            if (buscaSimbolo(nome, escopo))
+            {
+                Console.WriteLine("A variável '{0}' já foi declarada nesse escopo", nome);
+                return false;
+            }
+            var aux = tabelaSimbolo.proximoSimbolo;
+            while (aux.proximoSimbolo != null)
+            {
+                aux = aux.proximoSimbolo;
+            }
+            aux.proximoSimbolo = simbolo;
+            return true;
+        }
 
-        //private bool buscaSimbolo(string nome, string escopo)
-        //{
-        //    Simbolo simbolo = tabelaSimbolo.proximoSimbolo;
-        //    while (simbolo != null)
-        //    {
-        //        if (simbolo.nome == nome && simbolo.escopo == escopo)
-        //        {
-        //            return true;
-        //        }
-        //        simbolo = simbolo.proximoSimbolo;
-        //    }
-        //    return false;
-        //}
+        private bool buscaSimbolo(string nome, string escopo)
+        {
+            Simbolo simbolo = tabelaSimbolo.proximoSimbolo;
+            while (simbolo != null)
+            {
+                if (simbolo.nome == nome && simbolo.escopo == escopo)
+                {
+                    return true;
+                }
+                simbolo = simbolo.proximoSimbolo;
+            }
+            return false;
+        }
     }
 }
