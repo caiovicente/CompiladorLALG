@@ -299,7 +299,7 @@ namespace Compilador
         {
             List<string> nomes = new List<string>();
             string tipo = "";
-            string categoria = "parametros";
+            string categoria = "parametro";
             int posicao = 1;
 
             if (variaveis(ref nomes))
@@ -590,23 +590,46 @@ namespace Compilador
 
             if (token.tipo == "ident")
             {
+                string tipo1;
+                string nome ;
                 if (escopo == "global")
                 {
                     if (buscaSimbolo(token.id, "global", "ident"))
                     {
-                        
+                        tipo1 = retornaTipo(token.id, "global", "ident");
+                        nome = token.id;
                     }
                     else if (buscaSimbolo(token.id, "global", "variavel"))
                     {
-                        
+                        tipo1 = retornaTipo(token.id, "global", "variavel");
+                        nome = token.id;
                     }
                     else
                     {
                         Console.WriteLine("Variável ou procedimento '{0}' não declarada", token.id);
+                        return false;
+                    }
+                }
+                else 
+                {
+                    if (buscaSimbolo(token.id, escopo, "variavel"))
+                    {
+                        tipo1 = retornaTipo(token.id, escopo, "variavel");
+                        nome = token.id;
+                    }
+                    else if (buscaSimbolo(token.id, escopo, "parametro"))
+                    {
+                        tipo1 = retornaTipo(token.id, escopo, "parametro");
+                        nome = token.id;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Variável ou procedimento '{0}' não declarada no escopo", token.id);
+                        return false;
                     }
                 }
                 lerProximoToken();
-                if (restoIdent())
+                if (restoIdent(tipo1, escopo, nome))
                 {
                     return true;
                 }
@@ -617,14 +640,21 @@ namespace Compilador
         }
 
 
-        private bool restoIdent()
+        private bool restoIdent(string tipo1, string escopo, string nome1)
         {
+            string nome2 = "";
             if (token.id == ":=")
             {
                 lerProximoToken();
-                if (expressao())
+                if (expressao(ref nome2))
                 {
-                    return true;
+                    string tipo2 = retornaTipo(nome2, escopo);
+                    if ((tipo1 == "numero_real" && tipo2 == "numero_int") || tipo1 == tipo2)
+                    {
+                        return true;
+                    }
+                    Console.WriteLine("O tipo de '{0}' é incompatível com o tipo de '{1}'", nome1, nome2);
+                    return false;
                 }
                 return false;
             }
@@ -707,6 +737,19 @@ namespace Compilador
             return false;
         }
 
+        private bool expressao(ref string nome)
+        {
+            if (termo(ref nome))
+            {
+                if (outros_termos())
+                {
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
+
         private bool op_un()
         {
             if (token.id == "+")
@@ -774,6 +817,23 @@ namespace Compilador
             return false;
         }
 
+        private bool termo(ref string nome)
+        {
+            if (op_un())
+            {
+                if (fator(ref nome))
+                {
+                    if (mais_fatores())
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
+            return false;
+        }
+
         private bool mais_fatores()
         {
             if (op_mul())
@@ -817,13 +877,13 @@ namespace Compilador
             }
             if (token.tipo == "numero_int")
             {
-                insereSimbolo("numero", token.tipo, token.id);
+                insereSimbolo("numero", "numero_int", token.id);
                 lerProximoToken();
                 return true;
             }
             if (token.tipo == "numero_real")
             {
-                insereSimbolo("numero", token.tipo, token.id);
+                insereSimbolo("numero", "numero_real", token.id);
                 lerProximoToken();
                 return true;
             }
@@ -831,6 +891,45 @@ namespace Compilador
             {
                 lerProximoToken();
                 if (expressao())
+                {
+                    if (token.id == ")")
+                    {
+                        lerProximoToken();
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
+            return false;
+        }
+
+        private bool fator(ref string nome)
+        {
+            if (token.tipo == "ident")
+            {
+                nome = token.id;
+                lerProximoToken();
+                return true;
+            }
+            if (token.tipo == "numero_int")
+            {
+                nome = token.id;
+                insereSimbolo("numero", "numero_int", token.id);
+                lerProximoToken();
+                return true;
+            }
+            if (token.tipo == "numero_real")
+            {
+                nome = token.id;
+                insereSimbolo("numero", "numero_real", token.id);
+                lerProximoToken();
+                return true;
+            }
+            if (token.id == "(")
+            {
+                lerProximoToken();
+                if (expressao(ref nome))
                 {
                     if (token.id == ")")
                     {
@@ -947,6 +1046,50 @@ namespace Compilador
                 simbolo = simbolo.proximoSimbolo;
             }
             return false;
+        }
+
+        private string retornaTipo(string nome, string escopo, string categoria)
+        {
+            Simbolo simbolo = tabelaSimbolo.proximoSimbolo;
+
+            while (simbolo != null)
+            {
+                if (simbolo.nome == nome && simbolo.escopo == escopo && simbolo.categoria == categoria)
+                {
+                    if (simbolo.tipo == "integer")
+                    {
+                        return "numero_int";
+                    }
+                    if (simbolo.tipo == "real")
+                    {
+                        return "numero_real";
+                    }
+                }
+                simbolo = simbolo.proximoSimbolo;
+            }
+            return "";
+        }
+
+        private string retornaTipo(string nome, string escopo)
+        {
+            Simbolo simbolo = tabelaSimbolo.proximoSimbolo;
+
+            while (simbolo != null)
+            {
+                if (simbolo.nome == nome && simbolo.escopo == escopo)
+                {
+                    if (simbolo.tipo == "integer")
+                    {
+                        return "numero_int";
+                    }
+                    if (simbolo.tipo == "real")
+                    {
+                        return "numero_real";
+                    }
+                }
+                simbolo = simbolo.proximoSimbolo;
+            }
+            return "";
         }
 
         private bool buscaSimbolo(string nome)
