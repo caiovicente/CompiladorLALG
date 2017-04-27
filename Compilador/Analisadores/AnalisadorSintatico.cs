@@ -257,7 +257,7 @@ namespace Compilador
                 lerProximoToken();
                 if (token.tipo == "ident")
                 {
-                    insereSimbolo(token.id, "procedimento");
+                    insereSimbolo(token.id, "ident", "global", "procedimento");
                     string escopo = token.id;
                     lerProximoToken();
 
@@ -590,13 +590,20 @@ namespace Compilador
 
             if (token.tipo == "ident")
             {
-                if (buscaSimbolo(token.id, escopo))
+                if (escopo == "global")
                 {
-                    
-                }
-                else
-                {
-                    Console.WriteLine("Variável '{0}' não declarada", token.id);
+                    if (buscaSimbolo(token.id, "global", "ident"))
+                    {
+                        
+                    }
+                    else if (buscaSimbolo(token.id, "global", "variavel"))
+                    {
+                        
+                    }
+                    else
+                    {
+                        Console.WriteLine("Variável ou procedimento '{0}' não declarada", token.id);
+                    }
                 }
                 lerProximoToken();
                 if (restoIdent())
