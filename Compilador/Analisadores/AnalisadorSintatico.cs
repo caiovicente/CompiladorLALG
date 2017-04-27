@@ -620,7 +620,7 @@ namespace Compilador
                     }
                     else
                     {
-                        Console.WriteLine("Variável ou procedimento '{0}' não declarada", token.id);
+                        Console.WriteLine("Variável ou procedimento '{0}' não declarado", token.id);
                         return false;
                     }
                 }
@@ -664,7 +664,6 @@ namespace Compilador
                 if (expressao(ref nome2))
                 {
                     string tipo2 = retornaTipo(nome2);
-                    Console.WriteLine(tipo1, tipo2);
                     if ((tipo1 == "numero_real" && tipo2 == "numero_int") || tipo1 == tipo2)
                     {
                         return true;
