@@ -604,7 +604,7 @@ namespace Compilador
             if (token.tipo == "ident")
             {
                 string nomeMetodo = token.id;
-                string tipo1;
+                string tipo1 = "sem valor";
                 string nome;
                 if (escopo == "global")
                 {
@@ -663,8 +663,8 @@ namespace Compilador
                 lerProximoToken();
                 if (expressao(ref nome2))
                 {
-                    string tipo2 = retornaTipo(nome2, escopo);
-                    //Console.WriteLine(tipo1, tipo2);
+                    string tipo2 = retornaTipo(nome2);
+                    Console.WriteLine(tipo1, tipo2);
                     if ((tipo1 == "numero_real" && tipo2 == "numero_int") || tipo1 == tipo2)
                     {
                         return true;
@@ -1082,11 +1082,11 @@ namespace Compilador
             {
                 if (simbolo.nome == nome && simbolo.escopo == escopo && simbolo.categoria == categoria)
                 {
-                    if (simbolo.tipo == "integer")
+                    if (simbolo.tipo == "numero_int")
                     {
                         return "numero_int";
                     }
-                    if (simbolo.tipo == "real")
+                    if (simbolo.tipo == "numero_real")
                     {
                         return "numero_real";
                     }
@@ -1104,11 +1104,11 @@ namespace Compilador
             {
                 if (simbolo.nome == nome)
                 {
-                    if (simbolo.tipo == "integer")
+                    if (simbolo.tipo == "numero_int")
                     {
                         return "numero_int";
                     }
-                    if (simbolo.tipo == "real")
+                    if (simbolo.tipo == "numero_real")
                     {
                         return "numero_real";
                     }
