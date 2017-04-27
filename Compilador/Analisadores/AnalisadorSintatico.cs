@@ -153,14 +153,14 @@ namespace Compilador
         {
             if (token.id == "integer")
             {
-                tipo = token.id;
+                tipo = "numero_int";
                 lerProximoToken();
                 return true;
 
             }
             if (token.id == "real")
             {
-                tipo = token.id;
+                tipo = "numero_real";
                 lerProximoToken();
                 return true;
             }
@@ -281,7 +281,8 @@ namespace Compilador
             if (token.id == "(")
             {
                 lerProximoToken();
-                if (lista_par(escopo))
+                int posicao = 1;
+                if (lista_par(escopo, posicao))
                 {
                     if (token.id == ")")
                     {
@@ -295,12 +296,11 @@ namespace Compilador
             return true;
         }
 
-        private bool lista_par(string escopo)
+        private bool lista_par(string escopo, int posicao)
         {
             List<string> nomes = new List<string>();
             string tipo = "";
             string categoria = "parametro";
-            int posicao = 1;
 
             if (variaveis(ref nomes))
             {
@@ -320,7 +320,7 @@ namespace Compilador
                                 return false;
                             }
                         }
-                        if (mais_par(escopo))
+                        if (mais_par(escopo, posicao))
                         {
                             return true;
                         }
@@ -333,19 +333,17 @@ namespace Compilador
             return false;
         }
 
-        private bool mais_par(string escopo)
+        private bool mais_par(string escopo, int posicao)
         {
             if (token.id == ";")
             {
                 lerProximoToken();
-                if (lista_par(escopo))
+                if (lista_par(escopo, posicao))
                 {
                     return true;
                 }
                 return false;
             }
-
-
             return true;
         }
 
@@ -401,12 +399,12 @@ namespace Compilador
             return true;
         }
 
-        private bool lista_arg()
+        private bool lista_arg(ref List<string> args)
         {
             if (token.id == "(")
             {
                 lerProximoToken();
-                if (argumentos())
+                if (argumentos(ref args))
                 {
                     if (token.id == ")")
                     {
@@ -420,6 +418,21 @@ namespace Compilador
 
 
             return true;
+        }
+
+        private bool argumentos(ref List<string> args)
+        {
+            if (token.tipo == "ident")
+            {
+                args.Add(token.id);
+                lerProximoToken();
+                if (mais_ident())
+                {
+                    return true;
+                }
+                return false;
+            }
+            return false;
         }
 
         private bool argumentos()
@@ -590,8 +603,9 @@ namespace Compilador
 
             if (token.tipo == "ident")
             {
+                string nomeMetodo = token.id;
                 string tipo1;
-                string nome ;
+                string nome;
                 if (escopo == "global")
                 {
                     if (buscaSimbolo(token.id, "global", "ident"))
@@ -629,7 +643,7 @@ namespace Compilador
                     }
                 }
                 lerProximoToken();
-                if (restoIdent(tipo1, escopo, nome))
+                if (restoIdent(tipo1, escopo, nome, nomeMetodo))
                 {
                     return true;
                 }
@@ -640,15 +654,17 @@ namespace Compilador
         }
 
 
-        private bool restoIdent(string tipo1, string escopo, string nome1)
+        private bool restoIdent(string tipo1, string escopo, string nome1, string nomeMetodo)
         {
             string nome2 = "";
+
             if (token.id == ":=")
             {
                 lerProximoToken();
                 if (expressao(ref nome2))
                 {
                     string tipo2 = retornaTipo(nome2, escopo);
+                    //Console.WriteLine(tipo1, tipo2);
                     if ((tipo1 == "numero_real" && tipo2 == "numero_int") || tipo1 == tipo2)
                     {
                         return true;
@@ -659,9 +675,19 @@ namespace Compilador
                 return false;
             }
 
-            if (lista_arg())
+            List<string> args = new List<string>();
+
+            if (lista_arg(ref args))
             {
-                return true;
+                if (quantidadeArgumentos(nomeMetodo) == args.Count)
+                {
+                    return true;
+                }
+
+                int qtd = quantidadeArgumentos(nomeMetodo);
+                Console.WriteLine("Quantidade de argumentos inválidas na invocação do procedimento");
+                Console.WriteLine("Quantidade de argumentos do procediment: {0} | quantidade de argumentos passado: {1} | procedimento: {2}",qtd, args.Count, nomeMetodo);
+                return false;
             }
             return false;
         }
@@ -877,13 +903,13 @@ namespace Compilador
             }
             if (token.tipo == "numero_int")
             {
-                insereSimbolo("numero", "numero_int", token.id);
+                insereSimbolo(token.id, "numero_int", token.id);
                 lerProximoToken();
                 return true;
             }
             if (token.tipo == "numero_real")
             {
-                insereSimbolo("numero", "numero_real", token.id);
+                insereSimbolo(token.id, "numero_real", token.id);
                 lerProximoToken();
                 return true;
             }
@@ -915,14 +941,14 @@ namespace Compilador
             if (token.tipo == "numero_int")
             {
                 nome = token.id;
-                insereSimbolo("numero", "numero_int", token.id);
+                insereSimbolo(token.id,"numero_int", token.id);
                 lerProximoToken();
                 return true;
             }
             if (token.tipo == "numero_real")
             {
                 nome = token.id;
-                insereSimbolo("numero", "numero_real", token.id);
+                insereSimbolo(token.id, "numero_real", token.id);
                 lerProximoToken();
                 return true;
             }
@@ -1070,6 +1096,28 @@ namespace Compilador
             return "";
         }
 
+        private string retornaTipo(string nome)
+        {
+            Simbolo simbolo = tabelaSimbolo.proximoSimbolo;
+
+            while (simbolo != null)
+            {
+                if (simbolo.nome == nome)
+                {
+                    if (simbolo.tipo == "integer")
+                    {
+                        return "numero_int";
+                    }
+                    if (simbolo.tipo == "real")
+                    {
+                        return "numero_real";
+                    }
+                }
+                simbolo = simbolo.proximoSimbolo;
+            }
+            return "";
+        }
+
         private string retornaTipo(string nome, string escopo)
         {
             Simbolo simbolo = tabelaSimbolo.proximoSimbolo;
@@ -1104,6 +1152,21 @@ namespace Compilador
                 simbolo = simbolo.proximoSimbolo;
             }
             return false;
+        }
+
+        private int quantidadeArgumentos(string escopo)
+        {
+            Simbolo simbolo = tabelaSimbolo.proximoSimbolo;
+            int contador = 0;
+            while (simbolo != null)
+            {
+                if (simbolo.categoria == "parametro" && simbolo.escopo == escopo)
+                {
+                    contador++;
+                }
+                simbolo = simbolo.proximoSimbolo;
+            }
+            return contador;
         }
 
         private void imprimeTabela()
