@@ -201,14 +201,31 @@ namespace Compilador
         {
             if (token.tipo == "ident")
             {
-                if (buscaSimbolo(token.id, escopo) || buscaSimbolo(token.id, "global"))
+                if (escopo == "global")
                 {
+                    if (buscaSimbolo(token.id, "global"))
+                    {
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Variável '{0}' não declarada no escopo atual", token.id);
+                        return false;
+                    }
                     
                 }
                 else
                 {
-                    return false;
+                    if (buscaSimbolo(token.id))
+                    {
+                        
+                    }
+                    else
+                    {
+                        Console.WriteLine("Variável '{0}' não declarada", token.id);
+                    }
                 }
+
                 lerProximoToken();
                 if (mais_var(escopo))
                 {
